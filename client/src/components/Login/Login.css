@@ -1,0 +1,31 @@
+.btn:hover{
+ 
+    border-width: 2px;
+    border-style: solid;
+  background-color: linear-gradient(to bottom right,#18DB32,#0360FF ) 1;
+    
+    font-size: 15px; 
+    font-weight: 500;
+  }
+
+input[type="password"]:focus {
+    border-color:  #06868D;
+    box-shadow: 0 0 2px 0 #06868D;
+  }
+input[type="email"]:focus {
+    border-color:  #06868D;
+    box-shadow: 0 0 2px 0 #06868D;
+  }
+  input[type="text"]:focus {
+    border-color:  #06868D;
+    box-shadow: 0 0 2px 0 #06868D;
+  }
+  input[type="file"]:focus {
+    border-color:  #06868D;
+    box-shadow: 0 0 2px 0 #06868D;
+  }
+  .form-icon-container{position:relative}
+  .form-icon-container .form-icon-input,.form-icon-container .form-icon-label{padding-right:2.5rem}
+  .form-icon-container .form-icone{position:absolute;top:12px;right:1rem}
+  .form-icon-container .form-floating .form-icon-input{padding-right:35px}
+  .form-icon-container .form-floating+.form-icone{top:1.0625rem}

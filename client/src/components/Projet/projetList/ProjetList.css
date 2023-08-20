@@ -1,0 +1,40 @@
+textarea {
+    font-size: 0.9rem;
+    
+}
+
+textarea {
+    padding: 11px;
+    padding-left: 22px;
+    max-width: 100%;
+    line-height: 1.5;
+    border-radius: 5px;
+    border: 1px solid #e6e0e0;
+  
+}
+textarea:focus {
+    border-color:  #06868D;
+    box-shadow: 0 0 2px 0 #06868D;
+  }
+  input[type="date"]:focus {
+    border-color:  #06868D;
+    box-shadow: 0 0 2px 0 #06868D;
+  }
+  input[type="file"]:focus {
+    border-color:  #06868D;
+    box-shadow: 0 0 2px 0 #06868D;
+  }
+
+  input[type="date"] {
+    padding: 17px;
+  }
+  .form-select:focus {
+    border-color:  #06868D;
+    box-shadow: 0 0 2px 0 #06868D;
+  }
+
+  .type:hover{
+    background-color: white;
+  }
+.form-icon-container1{position:relative}.form-icon-container1 .form-icon1{position:absolute;right:12.9rem}.form-icon-container1 .form-icon-input1{padding-left:40px}.form-icon-container1 .form-icon1{top:0.5rem}
+  

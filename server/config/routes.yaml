@@ -1,0 +1,56 @@
+controllers:
+    resource: ../src/Controller/
+    type: annotation
+
+kernel:
+    resource: ../src/Kernel.php
+    type: annotation
+login:
+    path:       /login
+    controller: App\Controller\LoginController::login
+    methods: POST
+forgotPassword:
+    path:       /forgotPassword/{email}
+    controller: App\Controller\LoginController::forgotPassword
+    methods: POST
+resetPassword:
+    path:       /resetPassword/{token}/{password}/{resetpassword}
+    controller: App\Controller\LoginController::resetPassword
+    methods: POST
+secteur:
+    path:       /secteur
+    controller: App\Controller\SecteurController::index
+    methods: GET
+getMe:
+    path:       /getMe/{token}
+    controller: App\Controller\LoginController::getMe
+    methods: GET
+validerUser:
+    path:       /validerUse/{email}
+    controller: App\Controller\UserController::validerUser
+    methods: GET
+indexUser:
+    path:       /indexUser
+    controller: App\Controller\UserController::indexUser
+    methods: GET
+indexMembre:
+    path:       /indexMembre
+    controller: App\Controller\MembreController::indexMembre
+    methods: GET
+indexClient:
+    path:       /indexClient
+    controller: App\Controller\ClientController::indexClient
+    methods: GET
+indexChefProjet:
+    path:       /indexChefProjet
+    controller: App\Controller\ChefProjetController::indexChefProjet
+    methods: GET
+detailMembre:
+    path:       /detailMembre/{id}
+    controller: App\Controller\MembreController::detailMembre
+    methods: GET
+api_login_check:
+    path: /api/login_check
+    
+
+

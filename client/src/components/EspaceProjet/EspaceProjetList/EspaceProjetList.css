@@ -1,0 +1,27 @@
+.test:hover{
+    border-bottom: 4px solid white;
+}
+.form-icon-container3{position:relative}.form-icon-container3 .form-icon3{position:absolute;right:15.4rem}.form-icon-container3 .form-icon-input3{padding-left:40px}.form-icon-container3 .form-icon3{top:0.5rem}
+#featured {
+    width: 200px;
+    height: 200px;
+    background-color: #ff6f00;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 15px;
+    font-family: arial;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    position: absolute;
+  
+    &::selection {
+      background-color: transparent;
+    }
+  }
+  
+#cible2{left : 25%; top:30%}
+
