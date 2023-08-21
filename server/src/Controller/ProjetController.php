@@ -521,13 +521,17 @@ class ProjetController extends AbstractController
                         return $this->json(['success' =>  'success']); 
         } 
 //admin
-#[Route('/tousUsers', name: 'app_tousUsers', methods: ['GET'])]
+#[Route('/tousUsers/{org}', name: 'app_tousUsers', methods: ['GET'])]
 public function tousUsers(EntityManagerInterface $entityManager,Request $request,): Response
- {    $user = $entityManager
+ {               $org=$request->attributes->get('org');
+
+     $user = $entityManager
          ->getRepository(User::class)
          ->createQueryBuilder('u')
          ->andWhere('u.roles != :role')
-         ->setParameters([ 'role' => '["ROLE_ADMIN"]'])
+         ->join('u.organisation','organisation')
+         ->andWhere('organisation.id = :org')      
+         ->setParameters([ 'role' => '["ROLE_ADMIN"]','org' => $org])
          ->getQuery()->getResult();
  
          $nb=count($user);
@@ -535,27 +539,39 @@ public function tousUsers(EntityManagerInterface $entityManager,Request $request
          return $this->json(['users' =>  $user,'nb' =>  $nb]);
  }
 
- #[Route('/tousProjets', name: 'app_tousProjets')]
+ #[Route('/tousProjets/{org}', name: 'app_tousProjets')]
  public function tousProjets(EntityManagerInterface $entityManager,Request $request): Response
  {
+    $org=$request->attributes->get('org');
+
     $projet = $entityManager
     ->getRepository(Projet::class)
     ->createQueryBuilder('m')
+    ->join('m.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+    ->setParameters([
+        'org' => $org
+      ])
     ->getQuery()->getResult();
     $serializer = new Serializer([new ObjectNormalizer()]);
 
     $data = $serializer->normalize($projet, null, [AbstractNormalizer::ATTRIBUTES => ['id','nom','id','description','document','archive']]);
     return $this->json(['projets' =>  $data]); 
  }
- #[Route('/tousProjetsArchi', name: 'app_tousProjetsArchi')]
+ #[Route('/tousProjetsArchi/{org}', name: 'app_tousProjetsArchi')]
  public function tousProjetsArchi(EntityManagerInterface $entityManager,Request $request): Response
  {
+    $org=$request->attributes->get('org');
+
     $projet = $entityManager
     ->getRepository(Projet::class)
     ->createQueryBuilder('m')
     ->andWhere('m.archive = :archive')
+    ->join('m.organisation','organisation')
+    ->andWhere('organisation.id = :org')    
     ->setParameters([
-            'archive'=>true,
+            'archive'=>true
+            ,'org' => $org
           ])
     ->getQuery()->getResult();
     $serializer = new Serializer([new ObjectNormalizer()]);
@@ -563,17 +579,23 @@ public function tousUsers(EntityManagerInterface $entityManager,Request $request
     $data = $serializer->normalize($projet, null, [AbstractNormalizer::ATTRIBUTES => ['id','nom','id','description','document','archive']]);
     return $this->json(['projets' =>  $data]); 
  }
- #[Route('/tousProjetsRole', name: 'app_tousProjetsRole')]
+ #[Route('/tousProjetsRole/{org}', name: 'app_tousProjetsRole')]
  public function tousProjetsRole(EntityManagerInterface $entityManager,Request $request): Response
  {
+    $org=$request->attributes->get('org');
+
     $projet = $entityManager
     ->getRepository(DroitAcces::class)
     ->createQueryBuilder('m')
     ->andWhere('m.role = :role1')
     ->orWhere('m.role = :role2')
+    ->join('m.projet','projet')
+    ->join('projet.organisation','organisation')
+    ->andWhere('organisation.id = :org')   
     ->setParameters([
             'role1'=>'chefProjet',
-            'role2'=>'client',
+            'role2'=>'client'
+            ,'org' => $org
           ])
     ->getQuery()->getResult();
     $serializer = new Serializer([new ObjectNormalizer()]);

@@ -2,32 +2,35 @@ import React,{ useEffect, useState } from "react"
 import Axios from 'axios'
 import { Link,useNavigate,useParams } from "react-router-dom"
 import Modal from 'react-bootstrap/Modal';
+import jwt_decode from "jwt-decode";
 
 
 export default function ActivitésAdmin({type}) {
+    let user = jwt_decode(localStorage.getItem("token"));
+
     const [users,setUsers]= useState([])
     const [projets,setProjets]= useState([])
     const [tousProjetsArchi,setProjetsArchi]= useState([])
     const [usersProjetRole,setUsersProjetRole]= useState([])
 
     const tousUsers = (async () => {
-        await Axios.get(`http://localhost:8000/tousUsers`,).then((response)=>{
+        await Axios.get(`http://localhost:8000/tousUsers/${user.org}`,).then((response)=>{
          setUsers(response.data.users)
          })  });
       useEffect( () => {tousUsers(); },[]) ;
 
       const tousProjets = (async () => {
-        await Axios.get(`http://localhost:8000/tousProjets`,).then((response)=>{
+        await Axios.get(`http://localhost:8000/tousProjets/${user.org}`,).then((response)=>{
          setProjets(response.data.projets)
          })  });
       useEffect( () => {tousProjets(); },[]) ;
       const TousProjetsArchi = (async () => {
-        await Axios.get(`http://localhost:8000/tousProjetsArchi`,).then((response)=>{
+        await Axios.get(`http://localhost:8000/tousProjetsArchi/${user.org}`,).then((response)=>{
          setProjetsArchi(response.data.projets)
          })  });
       useEffect( () => {TousProjetsArchi(); },[]) ;
       const UsersProjetRole = (async () => {
-        await Axios.get(`http://localhost:8000/tousProjetsRole`,).then((response)=>{
+        await Axios.get(`http://localhost:8000/tousProjetsRole/${user.org}`,).then((response)=>{
          setUsersProjetRole(response.data.users)
          })  });
       useEffect( () => {UsersProjetRole(); },[]) ;
