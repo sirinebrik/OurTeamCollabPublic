@@ -51,7 +51,7 @@ export default function EspaceProjetPage({userRole}) {
     useEffect( () => {getProjetsUser();},[]);
     //tous les projets pour Admin
     const getProjets = (async () => {
-        await Axios.get(`http://localhost:8000/projet/acces`).then((response)=>{
+        await Axios.get(`http://localhost:8000/projet/acces/${user.org}`).then((response)=>{
          setProjets(response.data.projet)
         })  });
         useEffect( () => {getProjets();},[]) ;

@@ -375,7 +375,6 @@ return (
                                <select value={type} style={{fontSize:"12px"}} onChange={ (e) => { setType(e.target.value)}}   class="form-select ">
                                    <option value="Tous" selected > Toutes les activités</option>
                                    <option value="projets" selected > Tous les projets</option>
-                                   <option value="réunions" selected > Toutes les réunions</option>
                                 </select> 
                                 </div>
                             </div>

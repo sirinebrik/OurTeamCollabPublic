@@ -29,17 +29,12 @@ import PhaseProjet from './components/EspaceProjet/EspaceProjetForm/PhaseProjet'
 import EditTask from './components/EspaceProjet/EspaceProjetForm/EditTask';
 import DetailTask from './components/EspaceProjet/EspaceProjetForm/DetailTask';
 import EditTaskDuplicate from './components/EspaceProjet/EspaceProjetForm/EditTaskDuplicate';
-import ReunionList from './components/EspaceProjet/EspaceProjetForm/Reunion/ReunionList';
-import RoomPage from './components/EspaceProjet/EspaceProjetForm/Reunion/RoomPage';
-import EditReunion from './components/EspaceProjet/EspaceProjetForm/Reunion/EditReunion';
-import DetailReunion from './components/EspaceProjet/EspaceProjetForm/Reunion/DetailReunion';
+
 import NavbarActivitésAdmin from './components/Activités/NavbarActivitésAdmin';
 import NavbarActivitésChefProjet from './components/Activités/NavbarActivitésChefProjet';
 import NavbarActivitésMembre from './components/Activités/NavbarActivitésMembre';
 import NavbarActivitésClient from './components/Activités/NavbarActivitésClient';
-import EmailList from './components/Email/EmailList';
-import DetailEmail from './components/Email/DetailEmail';
-import MessageList from './components/Message/MessageList';
+
 import UtilisateurList from './components/Utilisateur/utilisateurList/UtilisateurList';
 import ProjetList from './components/Projet/projetList/ProjetList';
 import InscrireAdmin from './components/Login/InscrireAdmin';
@@ -140,22 +135,9 @@ function App() {
                    element={<EspaceProjetPage user={user} userRole={role}/>}
                   
             />
-              <Route path="/room/:id/:roomId/:idR"
-                   element={<RoomPage user={user} userRole={role}/>}
-                  
-            />
-              <Route path="/emails"
-                   element={<EmailList user={user} userRole={role}/>}
-                  
-            />
-              <Route path="/détailEmail/:id"
-                   element={<DetailEmail user={user} userRole={role}/>}
-                  
-            />
-              <Route path="/messages"
-                   element={<MessageList user={user} userRole={role}/>}
-                  
-            />
+            
+            
+              
             
             {(role==="ROLE_CLIENT"||role==="ROLE_CHEFPROJET"||role==="ROLE_MEMBRE")&&
             <>
@@ -178,12 +160,7 @@ function App() {
                    element={<EditTaskDuplicate user={user} userRole={role}/>}/> 
               <Route path="/detailTâche/:id/:idT/:projetRole"
                    element={<DetailTask user={user} userRole={role}/>}/>
-              <Route path="/réunion/:id/:projetRole"
-                   element={<ReunionList user={user} userRole={role}/>}/>
-              <Route path="/editRéunion/:id/:projetRole/:idR"
-                   element={<EditReunion user={user} userRole={role}/>}/>
-                <Route path="/détailRéunion/:id/:projetRole/:idR"
-                   element={<DetailReunion user={user} userRole={role}/>}/>
+             
                     <Route path="/activitésChefProjet"
                element={<NavbarActivitésChefProjet user={user} userRole={role}/>}/>
                  <Route path="/activitésMembre"
@@ -205,10 +182,8 @@ function App() {
                    element={<PhaseProjet user={user} userRole={role}/>}/>
                    <Route path="/detailTâche/:id/:idT"
                  element={<DetailTask user={user} userRole={role}/>}    />  
-                   <Route path="/réunion/:id"
-                   element={<ReunionList user={user} userRole={role}/>}/>
-                <Route path="/détailRéunion/:id/:idR"
-                   element={<DetailReunion user={user} userRole={role}/>}/>
+                   
+               
                     <Route path="/activités"
                element={<NavbarActivitésAdmin user={user} userRole={role}/>}/>
               </>   

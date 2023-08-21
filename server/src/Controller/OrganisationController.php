@@ -8,8 +8,7 @@ use App\Entity\Client;
 use App\Entity\Secteur;
 use App\Entity\Organisation;
 use App\Repository\SecteurRepository;
-use App\Entity\EmailNotifications;
-use App\Repository\EmailNotificationsRepository;
+
 use App\Repository\UserRepository;
 use App\Repository\OrganisationRepository;
 use App\Repository\MembreRepository;

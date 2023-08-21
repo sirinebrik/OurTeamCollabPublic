@@ -51,21 +51,7 @@ export default function ProjetM({id,nom,role,idU,type}) {
          setTasksProjetBloque(response.data.tasks)
          })  });
       useEffect( () => {tousTasksBloque(); },[]) ;
-      const tousReunions = (async () => {
-        await Axios.get(`http://localhost:8000/reunionMembreChefTous/${id}/${idU}`,).then((response)=>{
-         setReunions(response.data.reunions)
-         })  });
-      useEffect( () => {tousReunions(); },[]) ;
-      const MesReunions = (async () => {
-        await Axios.get(`http://localhost:8000/reunionMembreTous/${id}/${idU}`,).then((response)=>{
-         setMesReunions(response.data.reunions)
-         })  });
-      useEffect( () => {MesReunions(); },[]) ;
-      const reunionsChefAnnule = (async () => {
-        await Axios.get(`http://localhost:8000/reunionMembreChefAnnule/${id}/${idU}`,).then((response)=>{
-         setReunionsAnnule(response.data.reunions)
-         })  });
-      useEffect( () => {reunionsChefAnnule(); },[]) ;
+    
       
 return (
 <>
@@ -159,46 +145,7 @@ return (
           <Link to={ `/tableauDeBord/${id}`} style={{textDecoration:"none"  }}>  {nom}  </Link>
         </span>     
     </div>    </>)) } 
-    {(type==="Tous"||type==="réunions")&&reunions.map((item,index)=>(
-    <>
-     <div class="mt-2" style={{fontSize:"13px"}}>
-        <i class="fa   fa-briefcase"></i> Vous avez ajouté une réunion
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/détailRéunion/${item.user.projet.id}/${item.user.role}/${item.reunion.id}`} style={{textDecoration:"none"  }}>  {item.reunion.titre}  </Link>
-        </span> 
-        dans le projet
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/tableauDeBord/${id}`} style={{textDecoration:"none"  }}>  {nom}  </Link>
-        </span>     
-    </div> 
-    </>)) }
-    {(type==="Tous"||type==="réunions")&&mesReunions.map((item,index)=>(
-    <>
-     <div class="mt-2" style={{fontSize:"13px"}}>
-        <i class="fa   fa-briefcase"></i> Vous avez invité à une réunion
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/détailRéunion/${item.user.projet.id}/${item.user.role}/${item.reunion.id}`} style={{textDecoration:"none"  }}>  {item.reunion.titre}  </Link>
-        </span> 
-        dans le projet
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/tableauDeBord/${id}`} style={{textDecoration:"none"  }}>  {nom}  </Link>
-        </span>     
-    </div> 
-    </>)) }
- {(type==="Tous"||type==="réunions")&&reunionsAnnule.map((item,index)=>(
-    <>
-    <div class="mt-2" style={{fontSize:"13px"}}>
-        <i class="fa  fa-briefcase"></i> Vous avez annulé la réunion
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/détailRéunion/${item.user.projet.id}/${item.user.role}/${item.reunion.id}`} style={{textDecoration:"none"  }}>  {item.reunion.titre}  </Link>
-        </span> 
-        dans le projet
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/tableauDeBord/${id}`} style={{textDecoration:"none"  }}>  {nom}  </Link>
-        </span>     
-    </div>    </>
-                               
-)) } 
+   
     </>
  )
 }

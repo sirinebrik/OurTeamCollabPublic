@@ -9,8 +9,7 @@ use App\Entity\Secteur;
 use App\Entity\Organisation;
 use App\Repository\OrganisationRepository;
 use App\Repository\SecteurRepository;
-use App\Entity\EmailNotifications;
-use App\Repository\EmailNotificationsRepository;
+
 use App\Repository\UserRepository;
 use App\Repository\MembreRepository;
 use App\Repository\ChefProjetRepository;
@@ -67,7 +66,7 @@ class UserController extends AbstractController
         $jwtToken = $this->encoder->encode(['role' => $content->role,'secteur' => $content->secteur,'secteurC' => $content->secteurC,'sexe' => $content->sexe,
          'username' => $content->username,'lastname'=>$content->lastname,'email'=>$content->email,"departement"=>$content->departement,"nomEntreprise"=>$content->nomEntreprise,"org"=>$content->org]);
         $mail->send(
-            'ourteamcollab@gmail.com',
+            'ourteamcollabpublic@gmail.com',
             $content->email,
             ucfirst($content->username).' '.ucfirst($content->lastname),
            
@@ -168,7 +167,7 @@ class UserController extends AbstractController
                  ->getQuery()->getResult();
 
                  $mailA->send(
-                     'ourteamcollab@gmail.com',
+                     'ourteamcollabpublic@gmail.com',
                      $admin[0]->getEmail(),
                      ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname')),
                     
@@ -176,20 +175,10 @@ class UserController extends AbstractController
                     
                     
                  );
-                 $email = new EmailNotifications();
-                 $email->setUser($admin[0]);
-                 $email->setStatus(0);
-                 $email->setObjet(ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname')).' '." vient de s'inscrire sur la plateforme Acollab"
-                );
-                $email->setContenu("Bonjour, \n".ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname'))
-                ." vient de s'inscrire sur la plateforme Our Team Collab.");
-                $email->setDate(date("Y-m-d"));
-                $email->setHeure(date("H:i"));
-                $entityManager->persist($email);
-                $entityManager->flush();
+               
 
                  $mail->send(
-                     'ourteamcollab@gmail.com',
+                     'ourteamcollabpublic@gmail.com',
                      $request->request->get('email'),
                      ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname')),
                     

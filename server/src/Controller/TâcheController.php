@@ -12,8 +12,7 @@ use App\Entity\Phase;
 use App\Entity\Etat;
 use App\Entity\DroitAcces;
 use App\Entity\Task;
-use App\Entity\EmailNotifications;
-use App\Repository\EmailNotificationsRepository;
+
 use App\Entity\TaskRepository;
 use App\Entity\DroitAccesRepository;
 use App\Repository\UserRepository;
@@ -320,7 +319,7 @@ class TâcheController extends AbstractController
                            $task->setValide(false); 
                            if($task->getUser()!==null){
                            $mail->send(
-                            'ourteamcollab@gmail.com',
+                            'ourteamcollabpublic@gmail.com',
                             $task->getUser()->getUser()->getEmail(),
                             $task->getUser()->getUser()->getUsername().' '. $task->getUser()->getUser()->getLastname(),
                            "Refus de la tâche-".$task->getTitre(),
@@ -333,23 +332,7 @@ class TâcheController extends AbstractController
                            $task->getEtat()->getPhase()->getTitre()
                            
                         ); 
-                        $email = new EmailNotifications();
-            $email->setUser( $task->getUser()->getUser());
-            $email->setStatus(0);
-            $email->setObjet(   "Refus de la tâche-".$task->getTitre());
-           $email->setContenu("Cher/Chère  ".  $task->getUser()->getUser()->getUsername().' '. $task->getUser()->getUser()->getLastname().",
-           \nJ'espère que vous allez bien. Je tiens à vous remercier pour votre implication 
-           et pour avoir accompli la tâche".  $task->getTitre()."
-            que vous avez réalisée. Cependant, après avoir examiné attentivement les résultats 
-            et considéré les objectifs fixés, je regrette de devoir refuser la validation de cette tâche.
-          \nVeuillez prendre en compte les détails suivants : \n
-          Nom de projet: ".  $task->getUser()->getProjet()->getNom().".\nNom de phase: ". $task->getEtat()->getPhase()->getTitre().".\nDescription de la tâche: ". $task->getDescription().".\n
-          Date début:".$task->getDateDebut().".\n Date fin:  ".$task->getDateFin().".\nPriorité: ".$task->getPriorite().".\n
-           A très vite sur Our Team Collab.\nCordialement.");
-           $email->setDate(date("Y-m-d"));
-           $email->setHeure(date("H:i"));
-           $entityManager->persist($email);
-           $entityManager->flush();
+                     
                         }}
                   
                     $entityManager->persist($task);
@@ -416,7 +399,7 @@ class TâcheController extends AbstractController
                     ->getQuery()->getResult();
                 $chefP=$chef[0];
                      $mail->send(
-                        'ourteamcollab@gmail.com',
+                        'ourteamcollabpublic@gmail.com',
                         $chefP->getUser()->getEmail(),
                         $task->getUser()->getUser()->getUsername().' '. $task->getUser()->getUser()->getLastname(),
                        "Blocage de la tâche-".$task->getTitre(),
@@ -429,23 +412,7 @@ class TâcheController extends AbstractController
                        $etat->getPhase()->getTitre(),
                        $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname()); 
 
-                       $email = new EmailNotifications();
-                       $email->setUser( $chefP->getUser());
-                       $email->setStatus(0);
-                       $email->setObjet(  "Blocage de la tâche-".$task->getTitre());
-                      $email->setContenu("Cher/Chère ". $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname().",
-                      \nJ'espère que vous allez bien. Je vous écris pour vous informer qu'il y a
-                       un blocage dans la réalisation de la tâche  ". $task->getTitre().". 
-                       Malheureusement, le membre  ".$task->getUser()->getUser()->getUsername().' '. $task->getUser()->getUser()->getLastname()." rencontre des difficultés majeures qu'il empêche de progresser comme prévu.
-                      \nVeuillez prendre en compte les détails suivants : 
-                      \n Nom de projet:  ".$task->getUser()->getProjet()->getNom().".\nNom de phase: ". $etat->getPhase()->getTitre().".\n
-                       Description de la tâche:  ".$task->getDescription().".\n Date début: ". $task->getDateDebut().".\n
-                        Date fin:  ". $task->getDateFin().".\nPriorité: ". $task->getPriorite().".\n
-                      A très vite sur Our Team Collab.\nCordialement.");
-                      $email->setDate(date("Y-m-d"));
-                      $email->setHeure(date("H:i"));
-                      $entityManager->persist($email);
-                      $entityManager->flush();
+                     
                        
                    }}
                    else{
@@ -553,7 +520,7 @@ class TâcheController extends AbstractController
             ->findById($request->request->get('user'));
             $droitAcces=$d[0]  ;
                  $mail1->send(
-                    'ourteamcollab@gmail.com',
+                    'ourteamcollabpublic@gmail.com',
                     $chefP->getUser()->getEmail(),
                     $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                    "Blocage de la tâche-".$task->getTitre(),
@@ -566,23 +533,7 @@ class TâcheController extends AbstractController
                    $etat->getPhase()->getTitre(),
                    $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname());
 
-                   $email = new EmailNotifications();
-                   $email->setUser( $chefP->getUser());
-                   $email->setStatus(0);
-                   $email->setObjet(  "Blocage de la tâche-".$task->getTitre());
-                  $email->setContenu("Cher/Chère ". $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname().",
-                  \nJ'espère que vous allez bien. Je vous écris pour vous informer qu'il y a
-                   un blocage dans la réalisation de la tâche  ".  ucfirst($request->request->get('titre')).". 
-                   Malheureusement, le membre  ". $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname()." rencontre des difficultés majeures qu'il empêche de progresser comme prévu.
-                  \nVeuillez prendre en compte les détails suivants : 
-                  \n Nom de projet:  ". $droitAcces->getProjet()->getNom().".\nNom de phase: ".  $etat->getPhase()->getTitre().".\n
-                   Description de la tâche:  ". $request->request->get('description').".\n Date début: ".  $request->request->get('dateDebut').".\n
-                    Date fin:  ".  $request->request->get('dateFin').".\nPriorité: ".  $request->request->get('priorité').".\n
-                  A très vite sur Our Team Collab.\nCordialement.");
-                  $email->setDate(date("Y-m-d"));
-                  $email->setHeure(date("H:i"));
-                  $entityManager->persist($email);
-                  $entityManager->flush();
+                 
                }
             if($request->request->get('user')){
             $d =  $entityManager
@@ -596,7 +547,7 @@ class TâcheController extends AbstractController
             if($request->request->get('user')){
    
                 $mail->send(
-                    'ourteamcollab@gmail.com',
+                    'ourteamcollabpublic@gmail.com',
                     $droitAcces->getUser()->getEmail(),
                     $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                    " Affectation d'une nouvelle tâche",
@@ -608,23 +559,7 @@ class TâcheController extends AbstractController
                    $droitAcces->getProjet()->getNom(),
                    $etat->getPhase()->getTitre());
 
-                   $email = new EmailNotifications();
-                   $email->setUser( $droitAcces->getUser());
-                   $email->setStatus(0);
-                   $email->setObjet("Affectation d'une nouvelle tâche");
-                  $email->setContenu("Cher/Chère ".$droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname().",
-                 \nJe vous écris pour vous informer de l'affectation d'une nouvelle tâche importante.
-                   À partir d'aujourd'hui, vous êtes chargé(e) de la réalisation de la tâche suivante : 
-                  ".  ucfirst($request->request->get('titre')).".
-                 \nVeuillez prendre en compte les détails suivants :\n
-                  Nom de projet:  ".  $droitAcces->getProjet()->getNom().".\n Nom de phase: ". $etat->getPhase()->getTitre().".\n
-                   Description de la tâche:  ".$request->request->get('description')."\n Date début: ". $request->request->get('dateDebut').".\n
-                    Date fin:  ". $request->request->get('dateFin').".\n Priorité:  ". $request->request->get('priorité').".\n
-                  A très vite sur Our Team Collab.\nCordialement.");
-                  $email->setDate(date("Y-m-d"));
-                  $email->setHeure(date("H:i"));
-                  $entityManager->persist($email);
-                  $entityManager->flush();
+                  
                    
             }
             return $this->json([
@@ -700,7 +635,7 @@ class TâcheController extends AbstractController
                 ->findById($request->request->get('user'));
                 $droitAcces=$d[0]  ;
                      $mail2->send(
-                        'ourteamcollab@gmail.com',
+                        'ourteamcollabpublic@gmail.com',
                         $chefP->getUser()->getEmail(),
                         $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                        "Blocage de la tâche-".  ucfirst($request->request->get('titre')),
@@ -713,23 +648,7 @@ class TâcheController extends AbstractController
                        $etat->getPhase()->getTitre(),
                        $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname()); 
 
-                       $email = new EmailNotifications();
-                       $email->setUser( $chefP->getUser());
-                       $email->setStatus(0);
-                       $email->setObjet(  "Blocage de la tâche-".  ucfirst($request->request->get('titre')));
-                      $email->setContenu("Cher/Chère ". $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname().",
-                      \nJ'espère que vous allez bien. Je vous écris pour vous informer qu'il y a
-                       un blocage dans la réalisation de la tâche  ".  ucfirst($request->request->get('titre')).". 
-                       Malheureusement, le membre  ". $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname()." rencontre des difficultés majeures qu'il empêche de progresser comme prévu.
-                      \nVeuillez prendre en compte les détails suivants : 
-                      \n Nom de projet:  ". $droitAcces->getProjet()->getNom().".\nNom de phase: ".  $etat->getPhase()->getTitre().".\n
-                       Description de la tâche:  ". $request->request->get('description').".\n Date début: ".  $request->request->get('dateDebut').".\n
-                        Date fin:  ".  $request->request->get('dateFin').".\nPriorité: ".  $request->request->get('priorité').".\n
-                      A très vite sur Our Team Collab.\nCordialement.");
-                      $email->setDate(date("Y-m-d"));
-                      $email->setHeure(date("H:i"));
-                      $entityManager->persist($email);
-                      $entityManager->flush();
+                      
                    }}
                    else{
                     $task->setProblemeBlocage(null);
@@ -748,7 +667,7 @@ class TâcheController extends AbstractController
                     ->findById($request->request->get('user'));
                     $droitAcces=$d[0]  ;
                     $mail1->send(
-                     'ourteamcollab@gmail.com',
+                     'ourteamcollabpublic@gmail.com',
                      $droitAcces->getUser()->getEmail(),
                      $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                     "Refus de la tâche-".  ucfirst($request->request->get('titre')),
@@ -760,23 +679,7 @@ class TâcheController extends AbstractController
                     $droitAcces->getProjet()->getNom(),
                     $etat->getPhase()->getTitre());
                      
-                    $email = new EmailNotifications();
-                    $email->setUser(   $droitAcces->getUser());
-                    $email->setStatus(0);
-                    $email->setObjet( "Refus de la tâche-".  ucfirst($request->request->get('titre')));
-                   $email->setContenu("Cher/Chère  ".   $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname().",
-                   \nJ'espère que vous allez bien. Je tiens à vous remercier pour votre implication 
-                   et pour avoir accompli la tâche".  ucfirst($request->request->get('titre'))."
-                    que vous avez réalisée. Cependant, après avoir examiné attentivement les résultats 
-                    et considéré les objectifs fixés, je regrette de devoir refuser la validation de cette tâche.
-                  \nVeuillez prendre en compte les détails suivants : \n
-                  Nom de projet: ".  $droitAcces->getProjet()->getNom().".\nNom de phase: ". $etat->getPhase()->getTitre().".\nDescription de la tâche: ".  $request->request->get('description').".\n
-                  Date début:".  $request->request->get('dateDebut').".\n Date fin:  ".$request->request->get('dateFin').".\nPriorité: ". $request->request->get('priorité').".\n
-                   A très vite sur Our Team Collab.\nCordialement.");
-                   $email->setDate(date("Y-m-d"));
-                   $email->setHeure(date("H:i"));
-                   $entityManager->persist($email);
-                   $entityManager->flush(); 
+                   
                    }
                 }
                 }
@@ -796,7 +699,7 @@ class TâcheController extends AbstractController
                $task->setUser($droitAcces); 
          
                 $mail->send(
-                    'ourteamcollab@gmail.com',
+                    'ourteamcollabpublic@gmail.com',
                     $droitAcces->getUser()->getEmail(),
                     $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                    " Affectation d'une nouvelle tâche",
@@ -808,23 +711,7 @@ class TâcheController extends AbstractController
                    $droitAcces->getProjet()->getNom(),
                    $etat->getPhase()->getTitre());
 
-                   $email = new EmailNotifications();
-                   $email->setUser( $droitAcces->getUser());
-                   $email->setStatus(0);
-                   $email->setObjet("Affectation d'une nouvelle tâche");
-                  $email->setContenu("Cher/Chère ".$droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname().",
-                 \nJe vous écris pour vous informer de l'affectation d'une nouvelle tâche importante.
-                   À partir d'aujourd'hui, vous êtes chargé(e) de la réalisation de la tâche suivante : 
-                  ".  ucfirst($request->request->get('titre')).".
-                 \nVeuillez prendre en compte les détails suivants :\n
-                  Nom de projet:  ".  $droitAcces->getProjet()->getNom().".\n Nom de phase: ". $etat->getPhase()->getTitre().".\n
-                   Description de la tâche:  ".$request->request->get('description').".\n Date début: ". $request->request->get('dateDebut').".\n
-                    Date fin:  ". $request->request->get('dateFin').".\n Priorité:  ". $request->request->get('priorité').".\n
-                  A très vite sur Our Team Collab.\nCordialement.");
-                  $email->setDate(date("Y-m-d"));
-                  $email->setHeure(date("H:i"));
-                  $entityManager->persist($email);
-                  $entityManager->flush();
+                  
             }
             if($request->request->get('user')&&($task->getUser()===null)){
                 $d =  $entityManager
@@ -834,7 +721,7 @@ class TâcheController extends AbstractController
                $task->setUser($droitAcces); 
          
                 $mail->send(
-                    'ourteamcollab@gmail.com',
+                    'ourteamcollabpublic@gmail.com',
                     $droitAcces->getUser()->getEmail(),
                     $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                    " Affectation d'une nouvelle tâche",
@@ -846,23 +733,7 @@ class TâcheController extends AbstractController
                    $droitAcces->getProjet()->getNom(),
                    $etat->getPhase()->getTitre()
                 );
-                $email = new EmailNotifications();
-                $email->setUser( $droitAcces->getUser());
-                $email->setStatus(0);
-                $email->setObjet("Affectation d'une nouvelle tâche");
-               $email->setContenu("Cher/Chère ".$droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname().",
-              \nJe vous écris pour vous informer de l'affectation d'une nouvelle tâche importante.
-                À partir d'aujourd'hui, vous êtes chargé(e) de la réalisation de la tâche suivante : 
-               ".  ucfirst($request->request->get('titre')).".
-              \nVeuillez prendre en compte les détails suivants :\n
-               Nom de projet:  ".  $droitAcces->getProjet()->getNom().".\n Nom de phase: ". $etat->getPhase()->getTitre().".\n
-                Description de la tâche:  ".$request->request->get('description').".\n Date début: ". $request->request->get('dateDebut').".\n
-                 Date fin:  ". $request->request->get('dateFin').".\n Priorité:  ". $request->request->get('priorité').".\n
-               A très vite sur Our Team Collab.\nCordialement.");
-               $email->setDate(date("Y-m-d"));
-               $email->setHeure(date("H:i"));
-               $entityManager->persist($email);
-               $entityManager->flush();
+               
             }
             $task->setEtat($etat);
              $entityManager->persist($task);
@@ -919,7 +790,7 @@ class TâcheController extends AbstractController
                  ->findById($request->request->get('user'));
                  $droitAcces=$d[0]  ;
                       $mail2->send(
-                         'ourteamcollab@gmail.com',
+                         'ourteamcollabpublic@gmail.com',
                          $chefP->getUser()->getEmail(),
                          $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                         "Blocage de la tâche-".$task->getTitre(),
@@ -932,23 +803,7 @@ class TâcheController extends AbstractController
                         $etat->getPhase()->getTitre(),
                         $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname() ); 
 
-                        $email = new EmailNotifications();
-                        $email->setUser( $chefP->getUser());
-                        $email->setStatus(0);
-                        $email->setObjet(    "Blocage de la tâche-".$task->getTitre());
-                       $email->setContenu("Cher/Chère ". $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname().",
-                       \nJ'espère que vous allez bien. Je vous écris pour vous informer qu'il y a
-                        un blocage dans la réalisation de la tâche  ".   $task->getTitre().". 
-                        Malheureusement, le membre  ". $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname()." rencontre des difficultés majeures qu'il empêche de progresser comme prévu.
-                       \nVeuillez prendre en compte les détails suivants : 
-                       \n Nom de projet:  ". $droitAcces->getProjet()->getNom().".\nNom de phase: ".  $etat->getPhase()->getTitre().".\n
-                        Description de la tâche:  ".  $task->getDescription().".\n Date début: ".  $task->getDateDebut().".\n
-                         Date fin:  ".  $task->getDateFin().".\nPriorité: ".   $task->getPriorite().".\n
-                       A très vite sur Our Team Collab.\nCordialement.");
-                       $email->setDate(date("Y-m-d"));
-                       $email->setHeure(date("H:i"));
-                       $entityManager->persist($email);
-                       $entityManager->flush();
+                      
                     }
                     else{ $task->setProblemeBlocage(null);}
                  if($etat->getTitre()==="Terminé"){
@@ -1135,7 +990,7 @@ class TâcheController extends AbstractController
                   ->findById($request->request->get('user'));
                   $droitAcces=$d[0]  ;
                        $mail2->send(
-                          'ourteamcollab@gmail.com',
+                          'ourteamcollabpublic@gmail.com',
                           $chefP->getUser()->getEmail(),
                           $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                          "Blocage de la tâche-".  $task->getTitre(),
@@ -1148,23 +1003,7 @@ class TâcheController extends AbstractController
                          $etat->getPhase()->getTitre(),
                          $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname());
 
-                        $email = new EmailNotifications();
-                       $email->setUser( $chefP->getUser());
-                       $email->setStatus(0);
-                       $email->setObjet(  "Blocage de la tâche-".  $task->getTitre());
-                      $email->setContenu("Cher/Chère ". $chefP->getUser()->getUsername().' '. $chefP->getUser()->getLastname().",
-                      \nJ'espère que vous allez bien. Je vous écris pour vous informer qu'il y a
-                       un blocage dans la réalisation de la tâche  ".  ucfirst($request->request->get('titre')).". 
-                       Malheureusement, le membre  ". $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname()." rencontre des difficultés majeures qu'il empêche de progresser comme prévu.
-                      \nVeuillez prendre en compte les détails suivants : 
-                      \n Nom de projet:  ". $droitAcces->getProjet()->getNom().".\nNom de phase: ".  $etat->getPhase()->getTitre().".\n
-                       Description de la tâche:  ". $request->request->get('description').".\n Date début: ".  $request->request->get('dateDebut').".\n
-                        Date fin:  ".  $request->request->get('dateFin').".\nPriorité: ".  $request->request->get('priorité').".\n
-                      A très vite sur Our Team Collab.\nCordialement.");
-                      $email->setDate(date("Y-m-d"));
-                      $email->setHeure(date("H:i"));
-                      $entityManager->persist($email);
-                      $entityManager->flush();
+                      
                           
                      }}
                      else{
@@ -1184,7 +1023,7 @@ class TâcheController extends AbstractController
                       ->findById($request->request->get('user'));
                       $droitAcces=$d[0]  ;
                       $mail1->send(
-                       'ourteamcollab@gmail.com',
+                       'ourteamcollabpublic@gmail.com',
                        $droitAcces->getUser()->getEmail(),
                        $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                       "Refus de la tâche-".   $task->getTitre(),
@@ -1196,23 +1035,7 @@ class TâcheController extends AbstractController
                       $droitAcces->getProjet()->getNom(),
                       $etat->getPhase()->getTitre() ); 
 
-                      $email = new EmailNotifications();
-                      $email->setUser(   $droitAcces->getUser());
-                      $email->setStatus(0);
-                      $email->setObjet(  "Refus de la tâche-".   $task->getTitre());
-                     $email->setContenu("Cher/Chère  ".   $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname().",
-                     \nJ'espère que vous allez bien. Je tiens à vous remercier pour votre implication 
-                     et pour avoir accompli la tâche".    $task->getTitre()."
-                      que vous avez réalisée. Cependant, après avoir examiné attentivement les résultats 
-                      et considéré les objectifs fixés, je regrette de devoir refuser la validation de cette tâche.
-                    \nVeuillez prendre en compte les détails suivants : \n
-                    Nom de projet: ".  $droitAcces->getProjet()->getNom().".\nNom de phase: ". $etat->getPhase()->getTitre().".\nDescription de la tâche: ".  $request->request->get('description').".\n
-                    Date début:".  $request->request->get('dateDebut').".\n Date fin:  ".$request->request->get('dateFin').".\nPriorité: ". $request->request->get('priorité').".\n
-                     A très vite sur Our Team Collab.\nCordialement.");
-                     $email->setDate(date("Y-m-d"));
-                     $email->setHeure(date("H:i"));
-                     $entityManager->persist($email);
-                     $entityManager->flush(); 
+                     
                      }
                   }
                   }
@@ -1232,7 +1055,7 @@ class TâcheController extends AbstractController
                  $task->setUser($droitAcces); 
            
                   $mail->send(
-                      'ourteamcollab@gmail.com',
+                      'ourteamcollabpublic@gmail.com',
                       $droitAcces->getUser()->getEmail(),
                       $droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname(),
                      " Affectation d'une nouvelle tâche",
@@ -1244,23 +1067,7 @@ class TâcheController extends AbstractController
                      $droitAcces->getProjet()->getNom(),
                      $etat->getPhase()->getTitre()
                   );
-                  $email = new EmailNotifications();
-                  $email->setUser( $droitAcces->getUser());
-                  $email->setStatus(0);
-                  $email->setObjet("Affectation d'une nouvelle tâche");
-                 $email->setContenu("Cher/Chère ".$droitAcces->getUser()->getUsername().' '. $droitAcces->getUser()->getLastname().",
-                \nJe vous écris pour vous informer de l'affectation d'une nouvelle tâche importante.
-                  À partir d'aujourd'hui, vous êtes chargé(e) de la réalisation de la tâche suivante : 
-                 ".  ucfirst($request->request->get('titre')).".
-                \nVeuillez prendre en compte les détails suivants :\n
-                 Nom de projet:  ".  $droitAcces->getProjet()->getNom().".\n Nom de phase: ". $etat->getPhase()->getTitre().".\n
-                  Description de la tâche:  ".$request->request->get('description').".\n Date début: ". $request->request->get('dateDebut').".\n
-                   Date fin:  ". $request->request->get('dateFin').".\n Priorité:  ". $request->request->get('priorité').".\n
-                 A très vite sur Our Team Collab.\nCordialement.");
-                 $email->setDate(date("Y-m-d"));
-                 $email->setHeure(date("H:i"));
-                 $entityManager->persist($email);
-                 $entityManager->flush();
+                  
               }
             
               $task->setEtat($etat);

@@ -47,16 +47,7 @@ export default function Projet({id,nom,role,idU,type}) {
          })  });
       useEffect( () => {TasksProjetRefus(); },[]) ;
       
-      const tousReunions = (async () => {
-        await Axios.get(`http://localhost:8000/reunionsChefTous/${id}`,).then((response)=>{
-         setReunions(response.data.reunions)
-         })  });
-      useEffect( () => {tousReunions(); },[]) ;
-      const reunionsChefAnnule = (async () => {
-        await Axios.get(`http://localhost:8000/reunionsChefAnnule/${id}`,).then((response)=>{
-         setReunionsAnnule(response.data.reunions)
-         })  });
-      useEffect( () => {reunionsChefAnnule(); },[]) ;
+    
       
      
 return (
@@ -138,33 +129,7 @@ return (
     </div>    </>
                                
 )) } 
-{(type==="Tous"||type==="réunions")&&reunions.map((item,index)=>(
-    <>
-     <div class="mt-2" style={{fontSize:"13px"}}>
-        <i class="fa   fa-briefcase"></i> Vous avez ajouté une réunion
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/détailRéunion/${item.user.projet.id}/${item.user.role}/${item.reunion.id}`} style={{textDecoration:"none"  }}>  {item.reunion.titre}  </Link>
-        </span> 
-        dans le projet
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/tableauDeBord/${id}`} style={{textDecoration:"none"  }}>  {nom}  </Link>
-        </span>     
-    </div> 
-    </>)) }
- {(type==="Tous"||type==="réunions")&&reunionsAnnule.map((item,index)=>(
-    <>
-    <div class="mt-2" style={{fontSize:"13px"}}>
-        <i class="fa  fa-briefcase"></i> Vous avez annulé la réunion
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/détailRéunion/${item.user.projet.id}/${item.user.role}/${item.reunion.id}`} style={{textDecoration:"none"  }}>  {item.reunion.titre}  </Link>
-        </span> 
-        dans le projet
-        <span style={{fontWeight:"bold",color:"black"}}>
-          <Link to={ `/tableauDeBord/${id}`} style={{textDecoration:"none"  }}>  {nom}  </Link>
-        </span>     
-    </div>    </>
-                               
-)) } 
+
     </>
  )
 }

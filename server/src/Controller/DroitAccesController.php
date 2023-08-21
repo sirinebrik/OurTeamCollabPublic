@@ -19,8 +19,7 @@ use App\Repository\MembreRepository;
 use App\Repository\ChefProjetRepository;
 use App\Repository\ClientRepository;
 use App\Repository\ProjetRepository;
-use App\Entity\EmailNotifications;
-use App\Repository\EmailNotificationsRepository;
+
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\SendMailServiceProjet;
 use App\Service\SendMailServiceChangeChef;
@@ -376,25 +375,14 @@ class DroitAccesController extends AbstractController
                 $entityManager->flush();
                 $roleUser="Membre";
                 $mail->send(
-                    'ourteamcollab@gmail.com',
+                    'ourteamcollabpublic@gmail.com',
                     $user->getEmail(),
                     $user->getUsername().' '.$user->getLastname(),
                    "Rejoindre l'espace de projet",
                     ucfirst($projet->getNom()),
                     $roleUser
                 );
-                $email = new EmailNotifications();
-                $email->setUser($user);
-                $email->setStatus(0);
-                $email->setObjet("Rejoindre l'espace de projet");
-               $email->setContenu("Bonjour ".$user->getUsername().' '.$user->getLastname().",\n
-               Bienvenue chez Our Team Collab!\n Vous avez été ajouté à cet espace de projet: ". $projet->getNom().".\n
-               Votre droit d'accès: Membre.\n
-             A très vite sur Our Team Collab.");
-               $email->setDate(date("Y-m-d"));
-               $email->setHeure(date("H:i"));
-               $entityManager->persist($email);
-               $entityManager->flush();
+              
             }
             if($role==="client") {
                     $roleUser="Client";
@@ -427,49 +415,24 @@ class DroitAccesController extends AbstractController
                           ])
                     ->getQuery()->getResult(); 
                     $mail->send(
-                        'ourteamcollab@gmail.com',
+                        'ourteamcollabpublic@gmail.com',
                         $user->getEmail(),
                         $user->getUsername().' '.$user->getLastname(),
                        "Rejoindre l'espace de projet",
                         ucfirst($projet->getNom()),
                         $roleUser
                     );  
-                    $email = new EmailNotifications();
-                $email->setUser($user);
-                $email->setStatus(0);
-                $email->setObjet("Rejoindre l'espace de projet");
-               $email->setContenu("Bonjour ".$user->getUsername().' '.$user->getLastname().",\n
-               Bienvenue chez Our Team Collab!\n Vous avez été ajouté à cet espace de projet: ". $projet->getNom().".\n
-               Votre droit d'accès: " .$roleUser.".\n
-             A très vite sur Our Team Collab.");
-               $email->setDate(date("Y-m-d"));
-               $email->setHeure(date("H:i"));
-               $entityManager->persist($email);
-               $entityManager->flush();  
+                  
                     
                     foreach($membreProjet  as $m){
                         $mailC->send(
-                            'ourteamcollab@gmail.com',
+                            'ourteamcollabpublic@gmail.com',
                             ($m->getUser())->getEmail(),
                            "Changement de client",
                             ucfirst($projet->getNom()),
                             $user->getUsername().' '.$user->getLastname(),
                             $sexe,);  
-                            $email = new EmailNotifications();
-                $email->setUser($m->getUser());
-                $email->setStatus(0);
-                $email->setObjet("Changement de client");
-               $email->setContenu("Chers membres de l'équipe de projet ".ucfirst($projet->getNom()).",\n
-               J'espère que vous allez bien.\n Je tenais à vous informer d'un changement important concernant notre projet.
-               \nNous aurons un nouveau client qui prendra la responsabilité du projet actuel.
-               \nNous sommes heureux de vous annoncer que ".  $user->getUsername().' '.$user->getLastname()." assumera la responsabilité du projet. 
-               \nNous sommes convaincus qu'".$sexe." apportera une nouvelle dynamique et de nouvelles opportunités à notre collaboration.
-               \n
-             A très vite sur Our Team Collab.\nCordialement.");
-               $email->setDate(date("Y-m-d"));
-               $email->setHeure(date("H:i"));
-               $entityManager->persist($email);
-               $entityManager->flush();
+                          
                     }
 
                 }
@@ -488,7 +451,7 @@ class DroitAccesController extends AbstractController
                     ->getQuery()->getResult();
                     $droitAcces=$d[0];
                     $mailCh->send(
-                        'ourteamcollab@gmail.com',
+                        'ourteamcollabpublic@gmail.com',
                         ($droitAcces->getUser())->getEmail(),
                        "Changement de chef de projet",
                         ucfirst($projet->getNom()),
@@ -497,24 +460,7 @@ class DroitAccesController extends AbstractController
                         ($droitAcces->getUser())->getUsername().' '.($droitAcces->getUser())->getLastname(),
 
                     );  
-                    $email = new EmailNotifications();
-                    $email->setUser($droitAcces->getUser());
-                    $email->setStatus(0);
-                    $email->setObjet("Changement de chef de projet");
-                   $email->setContenu("Chers membres de l'équipe de projet ". ucfirst($projet->getNom()).",
-                   \nJ'espère que ce message vous trouve bien.
-                   \n Je tiens à vous informer d'un changement important au sein de notre équipe dans notre projet.  
-                   \nNous aurons un nouveau chef de projet qui prendra les rênes de notre projet.
-                   \nAprès une durée de service dévoué et d'excellent leadership de la part de 
-                   ".($droitAcces->getUser())->getUsername().' '.($droitAcces->getUser())->getLastname().", nous lui exprimons nos sincères remerciements pour ses contributions précieuses et son dévouement.
-                   \nJe suis ravi de vous annoncer que  ". $user->getUsername().' '.$user->getLastname()." assumera le rôle de chef de projet. 
-                   \nNous sommes confiants qu'".$sexe." dirigera notre équipe/projet avec succès.
-                  \n
-                   A très vite sur Our Team Collab.\n Cordialement.");
-                   $email->setDate(date("Y-m-d"));
-                   $email->setHeure(date("H:i"));
-                   $entityManager->persist($email);
-                   $entityManager->flush();
+                  
                     $droitAcces->setUser($user);
                     $entityManager->persist($droitAcces);
                     $entityManager->flush(); 
@@ -532,29 +478,18 @@ class DroitAccesController extends AbstractController
                           ])
                     ->getQuery()->getResult(); 
                     $mail->send(
-                        'ourteamcollab@gmail.com',
+                        'ourteamcollabpublic@gmail.com',
                         $user->getEmail(),
                         $user->getUsername().' '.$user->getLastname(),
                        "Rejoindre l'espace de projet",
                         ucfirst($projet->getNom()),
                         $roleUser
                     );  
-                    $email = new EmailNotifications();
-                    $email->setUser($user);
-                    $email->setStatus(0);
-                    $email->setObjet("Rejoindre l'espace de projet");
-                   $email->setContenu("Bonjour ".$user->getUsername().' '.$user->getLastname().",\n
-                   Bienvenue chez Our Team Collab! \n Vous avez été ajouté à cet espace de projet: ". $projet->getNom()." .\n
-                   Votre droit d'accès:" .$roleUser.". \n
-                 A très vite sur Our Team Collab.");
-                   $email->setDate(date("Y-m-d"));
-                   $email->setHeure(date("H:i"));
-                   $entityManager->persist($email);
-                   $entityManager->flush(); 
+                 
                   
                     foreach($membreProjet  as $m){
                         $mailCh->send(
-                            'ourteamcollab@gmail.com',
+                            'ourteamcollabpublic@gmail.com',
                             ($m->getUser())->getEmail(),
                            "Changement de chef de projet",
                             ucfirst($projet->getNom()),
@@ -564,24 +499,7 @@ class DroitAccesController extends AbstractController
 
                         );  
 
-                        $email = new EmailNotifications();
-                        $email->setUser($m->getUser());
-                        $email->setStatus(0);
-                        $email->setObjet("Changement de chef de projet");
-                       $email->setContenu("Chers membres de l'équipe de projet ". ucfirst($projet->getNom()).",
-                       \nJ'espère que ce message vous trouve bien.
-                       \n Je tiens à vous informer d'un changement important au sein de notre équipe dans notre projet.  
-                       \nNous aurons un nouveau chef de projet qui prendra les rênes de notre projet.
-                       \nAprès une durée de service dévoué et d'excellent leadership de la part de 
-                       ".($droitAcces->getUser())->getUsername().' '.($droitAcces->getUser())->getLastname().", nous lui exprimons nos sincères remerciements pour ses contributions précieuses et son dévouement.
-                       \nJe suis ravi de vous annoncer que  ". $user->getUsername().' '.$user->getLastname()." assumera le rôle de chef de projet. 
-                       \nNous sommes confiants qu'".$sexe." dirigera notre équipe/projet avec succès.
-                      \n
-                       A très vite sur Our Team Collab.\n Cordialement.");
-                       $email->setDate(date("Y-m-d"));
-                       $email->setHeure(date("H:i"));
-                       $entityManager->persist($email);
-                       $entityManager->flush();
+                       
                     }
                 }
           return $this->json([

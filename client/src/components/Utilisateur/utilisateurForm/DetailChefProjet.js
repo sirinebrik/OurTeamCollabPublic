@@ -365,7 +365,6 @@ return (
                                    <option value="projets" selected > Tous les projets</option>
                                    <option value="membres" selected > Tous les membres du projet</option>
                                    <option value="tâches" selected > Toutes les tâches</option>
-                                   <option value="réunions" selected > Toutes les réunions</option>
                                 </select> 
                                 </div>
                             </div>

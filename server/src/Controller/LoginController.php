@@ -88,7 +88,7 @@ class LoginController extends AbstractController
                   // On génère un token de réinitialisation
                 // Envoi du mail
                   $mail->send(
-                      'ourteamcollab@gmail.com',
+                      'ourteamcollabpublic@gmail.com',
                       $user,
                       'Réinitialiser le mot de passe',
                       $token

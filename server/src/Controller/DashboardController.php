@@ -15,15 +15,11 @@ use App\Entity\Etat;
 use App\Entity\DroitAcces;
 use App\Entity\Secteur;
 use App\Repository\SecteurRepository;
-use App\Entity\EmailNotifications;
-use App\Repository\EmailNotificationsRepository;
+
 use App\Entity\Task;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use JWT\Authentication\JWT;
-use App\Entity\Reunion;
-use App\Entity\ParticipationReunion;
-use App\Entity\ParticipationReunionRepository;
-use App\Entity\ReunionRepository;
+
 use App\Entity\TaskRepository;
 use App\Entity\DroitAccesRepository;
 use App\Repository\UserRepository;
@@ -44,8 +40,6 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
-use App\Service\SendMailServiceReunion;
-use App\Service\SendMailServiceAnnulerReunion;
 
 class DashboardController extends AbstractController
 {

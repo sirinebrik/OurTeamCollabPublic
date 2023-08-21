@@ -123,7 +123,7 @@ export default function EquipeProjet() {
 
 //tous les projets pour Admin
     const getProjets = (async () => {
-        await Axios.get(`http://localhost:8000/projet/acces`).then((response)=>{
+        await Axios.get(`http://localhost:8000/projet/acces/${user.org}`).then((response)=>{
          setProjets(response.data.projet)
         })  });
         useEffect( () => {getProjets();},[]) ;
@@ -160,7 +160,7 @@ const getChefProjets = (async () => {
             useEffect( () => {getChefProjets();},[]) ;
  //tous utilisateurs activés
  const getUsersTous = (async () => {
-    await Axios.get(`http://localhost:8000/indexUser`).then((response)=>{
+    await Axios.get(`http://localhost:8000/indexUser/${user.org}`).then((response)=>{
        setUsersTous(response.data.user)
    
  })});
@@ -185,7 +185,7 @@ const getChefProjets = (async () => {
 
 //tous membres
 const getMembresTous = (async () => {
-    await Axios.get(`http://localhost:8000/indexMembre`).then((response)=>{
+    await Axios.get(`http://localhost:8000/indexMembre/${user.org}`).then((response)=>{
       setMembresTous(response.data.user)  }) });
     useEffect( () => {getMembresTous();},[]) ;
     let listM=[]
@@ -194,7 +194,7 @@ const getMembresTous = (async () => {
 
 //tous clients
 const getClientsTous = (async () => {
-        await Axios.get(`http://localhost:8000/indexClient`).then((response)=>{
+        await Axios.get(`http://localhost:8000/indexClient/${user.org}`).then((response)=>{
          setClientsTous(response.data.user)})  });
        useEffect( () => {getClientsTous();},[]) ;
     let listC=[]
@@ -202,7 +202,7 @@ const getClientsTous = (async () => {
    clientsTous.map((item) => {iC=0;usersProjet.map((item1) => {if(item.utilisateur.id===item1.user.id){iC=iC+1}});if(iC===0){listC.push(item)} })
 //tous chefs de projets
 const getChefProjetsTous = (async () => {
-            await Axios.get(`http://localhost:8000/indexChefProjet`).then((response)=>{
+            await Axios.get(`http://localhost:8000/indexChefProjet/${user.org}`).then((response)=>{
                 setChefProjetsTous(response.data.user);})  });
             useEffect( () => {getChefProjetsTous();},[]) ; 
      let listCh=[]
@@ -274,18 +274,7 @@ return (
                            <span class="menu-title"> Tâches</span>
                         </Link>}
                             </li>
-                            <li class="nav-item">
-                            {role==="ROLE_ADMIN"&&
-                        <Link class="nav-link test "  to={ `/réunion/${id}`} style={{textDecoration:"none" ,color:"#dfe3ea",fontSize:"14px" }}>
-                                   <i class="fa fa-fw fa-briefcase"></i>
-                           <span class="menu-title"> Réunions</span>
-                        </Link>}
-                    {(role==="ROLE_CLIENT"||role==="ROLE_MEMBRE"||role==="ROLE_CHEFPROJET")&&
-                        <Link class="nav-link test "  to={ `/réunion/${id}/${projetRole}`} style={{textDecoration:"none" ,color:"#dfe3ea",fontSize:"14px" }}>
-                                   <i class="fa fa-fw fa-briefcase"></i>
-                           <span class="menu-title">Réunions</span>
-                        </Link>}
-                            </li>
+                           
                             <li class="nav-item ">
                             {role==="ROLE_ADMIN"&&
                                 <Link class="nav-link test"  to={ `/equipeProjet/${id}`} style={{textDecoration:"none" ,color:"white",fontWeight:"bold",fontSize:"15px" }} >

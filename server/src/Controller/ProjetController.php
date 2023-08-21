@@ -12,16 +12,11 @@ use App\Entity\Membre;
 use App\Entity\Client;
 use App\Entity\Phase;
 use App\Entity\Etat;
-use App\Entity\EmailNotifications;
 use App\Entity\Organisation;
 use App\Repository\OrganisationRepository;
-use App\Repository\EmailNotificationsRepository;
 use App\Entity\DroitAcces;
 use App\Entity\Task;
-use App\Entity\Reunion;
-use App\Entity\ParticipationReunion;
-use App\Entity\ParticipationReunionRepository;
-use App\Entity\ReunionRepository;
+
 use App\Entity\TaskRepository;
 use App\Entity\DroitAccesRepository;
 use App\Repository\UserRepository;
@@ -293,25 +288,14 @@ class ProjetController extends AbstractController
              $entityManager->flush();
 
              $mail->send(
-                'ourteamcollab@gmail.com',
+                'ourteamcollabpublic@gmail.com',
                 $user->getEmail(),
                 $user->getUsername().' '.$user->getLastname(),
                "Rejoindre l'espace de projet",
                 ucfirst($request->request->get('nom')),
                 "Client"
             );
-            $email = new EmailNotifications();
-            $email->setUser($user);
-            $email->setStatus(0);
-            $email->setObjet("Rejoindre l'espace de projet");
-           $email->setContenu("Bonjour ".$user->getUsername().' '.$user->getLastname().",\nBienvenue chezOur Team Collab!\n 
-           Vous avez été ajouté à cet espace de projet: ". ucfirst($request->request->get('nom'))."\n
-           Votre droit d'accès: Client\n
-         A très vite sur Our Team Collab.");
-           $email->setDate(date("Y-m-d"));
-           $email->setHeure(date("H:i"));
-           $entityManager->persist($email);
-           $entityManager->flush();
+          
         }
         if($membre) {
            
@@ -327,24 +311,14 @@ class ProjetController extends AbstractController
              $entityManager->flush();
             
              $mail->send(
-                'ourteamcollab@gmail.com',
+                'ourteamcollabpublic@gmail.com',
                 $user->getEmail(),
                 $user->getUsername().' '.$user->getLastname(),
                "Rejoindre l'espace de projet",
                 ucfirst($request->request->get('nom')),
                 "Chef de Projet"
             );
-            $email = new EmailNotifications();
-            $email->setUser($user);
-            $email->setStatus(0);
-            $email->setObjet("Rejoindre l'espace de projet");
-           $email->setContenu("Bonjour ".$user->getUsername().' '.$user->getLastname().",\n Bienvenue chez Our Team Collab! \n Vous avez été ajouté à cet espace de projet: ". ucfirst($request->request->get('nom'))." .\nVotre droit d'accès: Chef de Projet \n
-         A très vite sur Our Team Collab.");
-           $email->setDate(date("Y-m-d"));
-           $email->setHeure(date("H:i"));
-           $entityManager->persist($email);
-           $entityManager->flush();
-            
+          
         }
         if($chef) {
            
@@ -360,26 +334,14 @@ class ProjetController extends AbstractController
              $entityManager->flush();
             
              $mail->send(
-                'ourteamcollab@gmail.com',
+                'ourteamcollabpublic@gmail.com',
                 $user->getEmail(),
                 $user->getUsername().' '.$user->getLastname(),
                "Rejoindre l'espace de projet",
                 ucfirst($request->request->get('nom')),
                 "Chef de Projet"
             );
-            $email = new EmailNotifications();
-            $email->setUser($user);
-            $email->setStatus(0);
-            $email->setObjet("Rejoindre l'espace de projet");
-           $email->setContenu("Bonjour ".$user->getUsername().' '.$user->getLastname().",\n
-           Bienvenue chez Our Team Collab!\n 
-           Vous avez été ajouté à cet espace de projet: ". ucfirst($request->request->get('nom')).".\n
-           Votre droit d'accès: Chef de Projet.\n
-         A très vite sur Our Team Collab.");
-           $email->setDate(date("Y-m-d"));
-           $email->setHeure(date("H:i"));
-           $entityManager->persist($email);
-           $entityManager->flush();
+          
             
         }
         
@@ -648,26 +610,7 @@ public function tousUsers(EntityManagerInterface $entityManager,Request $request
         );
     }
 
-    #[Route('/reunionsUserTous/{idU}', name: 'app_reunionsUserTous')]
-    public function reunionsUserTous(Request $request,EntityManagerInterface $entityManager): Response
-    {
-        $id=$request->attributes->get('idU');
-     
-        $par = $entityManager
-        ->getRepository(ParticipationReunion::class)
-        ->createQueryBuilder('m')
-        ->join('m.user','users')
-        ->join('users.user','user')
-        ->andWhere('user.id = :id')
-        ->setParameters([
-                'id'=>$id, ])
-        ->getQuery()->getResult();
-      
-      return $this->json([
-            'reunions' =>  $par,
-              ]);
-            
-    }
+  
 //chefProjet
     #[Route('/tasksChefProjetTous/{id}', name: 'app_tasksChefProjetTous')]
     public function tasksChefProjetTous(EntityManagerInterface $entityManager,Request $request): Response
@@ -799,53 +742,9 @@ public function tousUsers(EntityManagerInterface $entityManager,Request $request
             ['tasks' =>  $data]
         );
     }
-    #[Route('/reunionsChefAnnule/{id}', name: 'app_reunionsChefAnnule')]
-    public function reunionsChefAnnule(Request $request,EntityManagerInterface $entityManager): Response
-    {
-        $id=$request->attributes->get('id');
-     
-        $par = $entityManager
-        ->getRepository(ParticipationReunion::class)
-        ->createQueryBuilder('m')
-        ->join('m.user','users')
-        ->join('m.reunion','reunion')
-        ->join('users.projet','projet')
-        ->andWhere('projet.id = :id')
-        ->andWhere('reunion.annule = :annule')
-        ->setParameters([
-                'id'=>$id,
-                'annule'=>true, ])
-        ->groupBy('reunion.id')
-        ->getQuery()->getResult();
-      
-      return $this->json([
-            'reunions' =>  $par,
-              ]);
-            
-    }
+   
 
-    #[Route('/reunionsChefTous/{id}', name: 'app_reunionsChefTous')]
-    public function reunionsChefTous(Request $request,EntityManagerInterface $entityManager): Response
-    {
-       
-        $idP=$request->attributes->get('id');
-        $par = $entityManager
-        ->getRepository(ParticipationReunion::class)
-        ->createQueryBuilder('m')
-        ->join('m.user','users')
-        ->join('m.reunion','reunion')
-        ->join('users.projet','projet')
-        ->andWhere('projet.id = :idP')
-        ->setParameters([
-              'idP'=>$idP, ])
-        ->groupBy('reunion.id')
-        ->getQuery()->getResult();
-      
-      return $this->json([
-            'reunions' =>  $par,
-              ]);
-            
-    }
+  
     #[Route('/tousMembresProjetChef/{id}', name: 'app_tousMembresProjetChef')]
     public function tousMembresProjetChef(EntityManagerInterface $entityManager,Request $request): Response
     {
@@ -1061,151 +960,8 @@ if(count($role)!==0){
 
 
     
-    #[Route('/reunionMembreChefTous/{id}/{idU}', name: 'app_reunionMembreChefTous')]
-    public function reunionMembreChefTous(EntityManagerInterface $entityManager,Request $request): Response
-    {
-        $id=$request->attributes->get('id');
-        $idU=$request->attributes->get('idU');
-        $data=[];
-        $role = $entityManager
-        ->getRepository(DroitAcces::class)
-        ->createQueryBuilder('m')
-         ->join('m.projet','projet')
-         ->join('m.user','user')
-         ->andWhere('user.id = :idU')
-         ->andWhere('projet.id = :id')
-        ->andWhere('m.role = :role1')
-        ->setParameters([
-                'role1'=>'chefProjet',
-                'id'=>$id,
-                'idU'=>$idU
-              ])
-        ->getQuery()->getResult();
-if(count($role)!==0){
-
-    $par = $entityManager
-    ->getRepository(ParticipationReunion::class)
-    ->createQueryBuilder('m')
-    ->join('m.user','users')
-    ->join('m.reunion','reunion')
-    ->join('users.projet','projet')
-    ->andWhere('projet.id = :id')
-    ->setParameters([
-          'id'=>$id, ])
-    ->groupBy('reunion.id')
-    ->getQuery()->getResult();
-        $data = $par;
-}
-        return $this->json(
-            ['reunions' =>  $data]
-        );
-    }
+    
 
 
-    #[Route('/reunionMembreChefAnnule/{id}/{idU}', name: 'app_reunionMembreChefAnnule')]
-    public function reunionMembreChefAnnule(EntityManagerInterface $entityManager,Request $request): Response
-    {
-        $id=$request->attributes->get('id');
-        $idU=$request->attributes->get('idU');
-        $data=[];
-        $role = $entityManager
-        ->getRepository(DroitAcces::class)
-        ->createQueryBuilder('m')
-         ->join('m.projet','projet')
-         ->join('m.user','user')
-         ->andWhere('user.id = :idU')
-         ->andWhere('projet.id = :id')
-        ->andWhere('m.role = :role1')
-        ->setParameters([
-                'role1'=>'chefProjet',
-                'id'=>$id,
-                'idU'=>$idU
-              ])
-        ->getQuery()->getResult();
-if(count($role)!==0){
-
-    $par = $entityManager
-        ->getRepository(ParticipationReunion::class)
-        ->createQueryBuilder('m')
-        ->join('m.user','users')
-        ->join('m.reunion','reunion')
-        ->join('users.projet','projet')
-        ->andWhere('projet.id = :id')
-        ->andWhere('reunion.annule = :annule')
-        ->setParameters([
-                'id'=>$id,
-                'annule'=>true, ])
-        ->groupBy('reunion.id')
-        ->getQuery()->getResult();
-
-        $data = $par;
-}
-        return $this->json(
-            ['reunions' =>  $data]
-        );
-    }
-
-    #[Route('/reunionMembreTous/{id}/{idU}', name: 'app_reunionMembreTous')]
-    public function reunionMembreTous(EntityManagerInterface $entityManager,Request $request): Response
-    {
-        $id=$request->attributes->get('id');
-        $idU=$request->attributes->get('idU');
-        $data=[];
-        $role = $entityManager
-        ->getRepository(DroitAcces::class)
-        ->createQueryBuilder('m')
-         ->join('m.projet','projet')
-         ->join('m.user','user')
-         ->andWhere('user.id = :idU')
-         ->andWhere('projet.id = :id')
-        ->andWhere('m.role = :role1')
-        ->setParameters([
-                'role1'=>'membre',
-                'id'=>$id,
-                'idU'=>$idU
-              ])
-        ->getQuery()->getResult();
-if(count($role)!==0){
-
-    $par = $entityManager
-    ->getRepository(ParticipationReunion::class)
-    ->createQueryBuilder('m')
-    ->join('m.user','users')
-    ->join('users.user','user')
-    ->join('users.projet','projet')
-    ->andWhere('projet.id = :id')
-    ->andWhere('user.id = :idU')
-    ->setParameters([
-          'id'=>$id,
-          'idU'=>$idU,])
-    ->getQuery()->getResult();
-
-        $data =$par;
-}
-        return $this->json(
-            ['reunions' =>  $data]
-        );
-    }
-    #[Route('/reunionClientTous/{id}/{idU}', name: 'app_reunionClientTous')]
-    public function reunionClientTous(EntityManagerInterface $entityManager,Request $request): Response
-    {
-        $id=$request->attributes->get('id');
-        $idU=$request->attributes->get('idU');
-     $par = $entityManager
-    ->getRepository(ParticipationReunion::class)
-    ->createQueryBuilder('m')
-    ->join('m.user','users')
-    ->join('users.user','user')
-    ->join('users.projet','projet')
-    ->andWhere('projet.id = :id')
-    ->andWhere('user.id = :idU')
-    ->setParameters([
-          'id'=>$id,
-          'idU'=>$idU,])
-    ->getQuery()->getResult();
-
-        return $this->json(
-            ['reunions' =>  $par]
-        );
-    }
+   
 }

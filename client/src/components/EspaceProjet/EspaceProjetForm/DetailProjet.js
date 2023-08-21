@@ -98,7 +98,7 @@ export default function DetailProjet() {
     useEffect( () => {getDetailProjet();},[]);
 //tous les projets pour Admin
     const getProjets = (async () => {
-        await Axios.get(`http://localhost:8000/projet/acces`).then((response)=>{
+        await Axios.get(`http://localhost:8000/projet/acces/${user.org}`).then((response)=>{
          setProjets(response.data.projet)
         })  });
         useEffect( () => {getProjets();},[]) ;
@@ -193,16 +193,8 @@ return (
                            </Link>}
                             </li>
                             <li class="nav-item">
-                            {role==="ROLE_ADMIN"&&
-                        <Link class="nav-link test "  to={ `/réunion/${id}`} style={{textDecoration:"none" ,color:"#dfe3ea",fontSize:"14px" }}>
-                                   <i class="fa fa-fw fa-briefcase"></i>
-                           <span class="menu-title"> Réunions</span>
-                        </Link>}
-                    {(role==="ROLE_CLIENT"||role==="ROLE_MEMBRE"||role==="ROLE_CHEFPROJET")&&
-                        <Link class="nav-link test "  to={ `/réunion/${id}/${projetRole}`} style={{textDecoration:"none" ,color:"#dfe3ea",fontSize:"14px" }}>
-                                   <i class="fa fa-fw fa-briefcase"></i>
-                           <span class="menu-title">Réunions</span>
-                        </Link>}
+                         
+                  
                             </li>
                             <li class="nav-item ">
                             {role==="ROLE_ADMIN"&&
