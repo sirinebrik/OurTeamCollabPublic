@@ -40,6 +40,9 @@ class Projet
     #[ORM\Column]
     private ?bool $archive = null;
 
+    #[ORM\ManyToOne]
+    private ?Organisation $organisation = null;
+
     public function __construct()
     {
         $this->droitAcces = new ArrayCollection();
@@ -121,6 +124,18 @@ class Projet
     public function setArchive(bool $archive): self
     {
         $this->archive = $archive;
+
+        return $this;
+    }
+
+    public function getOrganisation(): ?Organisation
+    {
+        return $this->organisation;
+    }
+
+    public function setOrganisation(?Organisation $organisation): self
+    {
+        $this->organisation = $organisation;
 
         return $this;
     }

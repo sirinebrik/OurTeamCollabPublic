@@ -3,8 +3,7 @@ import './Login.css';
 import '../../assets/css/theme-rtl.min.css';
 import '../../assets/css/theme.min.css';
 import Axios from 'axios'
-import { useParams } from "react-router-dom"
-import jwt_decode from "jwt-decode";
+
 
 
 export default function InscrireAdmin() {
@@ -25,7 +24,6 @@ export default function InscrireAdmin() {
   const [resetpassword, setResetpassword] = useState();
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
   const [passwordIsVisible1, setPasswordIsVisible1] = useState(false);
-  const [valide, setValide] = useState("");
 
   const getSecteurs = (async () => {
     await Axios.get("http://localhost:8000/secteur").then((response)=>{
@@ -79,7 +77,7 @@ if (password){
       }
       );
     
-      window.location='/inscriptionValide'
+      window.location='/'
      
      
     } catch (ex) {
@@ -105,7 +103,7 @@ return(
                     <div >
                       <div className="text-center mb-4">
                         <img className=" mb-2 " src={require('../../assets/img/logos/logo.png')} alt="" height="88" width="160"/>     
-                        <h3 className="text-1000">Création de votre compte</h3>
+                        <h3 className="text-1000">Création de votre organition et votre compte</h3>
                       </div>
                       <form encType="multipart/form-data"  onSubmit={changeOnClick}>
                         <p className="fs-title" style={{"color":"red"}}>
@@ -198,7 +196,7 @@ return(
                           </div>
                         </div>
                         <button type="submit" class="btn"   disabled={(!nom||!prenom||!password||!resetpassword) && "disabled" } style={{ backgroundColor:"#06868D" , color:"white" ,fontSize:"14px",fontWeight:"bold" ,padding:"10px"}}>
-                                              S'inscrire
+                           Créer votre compte
                         </button>                                      
                       </form>
                     </div>

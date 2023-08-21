@@ -6,6 +6,8 @@ use App\Entity\Membre;
 use App\Entity\ChefProjet;
 use App\Entity\Client;
 use App\Entity\Secteur;
+use App\Entity\Organisation;
+use App\Repository\OrganisationRepository;
 use App\Repository\SecteurRepository;
 use App\Entity\EmailNotifications;
 use App\Repository\EmailNotificationsRepository;
@@ -56,14 +58,14 @@ class UserController extends AbstractController
         $secteur =  $entityManager
         ->getRepository(Secteur::class)
         ->findById($content->secteur);
-       
+      
 
          $secteurC = $entityManager
         ->getRepository(Secteur::class)
         ->findById($content->secteurC);
        
         $jwtToken = $this->encoder->encode(['role' => $content->role,'secteur' => $content->secteur,'secteurC' => $content->secteurC,'sexe' => $content->sexe,
-         'username' => $content->username,'lastname'=>$content->lastname,'email'=>$content->email,"departement"=>$content->departement,"nomEntreprise"=>$content->nomEntreprise]);
+         'username' => $content->username,'lastname'=>$content->lastname,'email'=>$content->email,"departement"=>$content->departement,"nomEntreprise"=>$content->nomEntreprise,"org"=>$content->org]);
         $mail->send(
             'ourteamcollab@gmail.com',
             $content->email,
@@ -91,6 +93,9 @@ class UserController extends AbstractController
                 $membre = new Membre();
                 $chefProjet = new ChefProjet();
                 $client = new Client();
+                $organisation = $entityManager
+                ->getRepository(Organisation::class)
+                ->find($request->request->get('org'));
                 $content = json_decode($request->getContent());
                
                
@@ -108,6 +113,7 @@ class UserController extends AbstractController
                    $user->setEmail($request->request->get('email'));
                    $date=new \DateTime('now');
                    $user->setDateAjout($date);
+                   $user->setOrganisation($organisation);
                    $image=$request->files->get('photo');
                    
                    if($image){
@@ -156,7 +162,9 @@ class UserController extends AbstractController
                  ->getRepository(User::class)
                  ->createQueryBuilder('u')
                  ->andWhere('u.roles = :role')
-                 ->setParameters([ 'role' => '["ROLE_ADMIN"]'])
+                 ->join('u.organisation','organisation')
+                 ->andWhere('organisation.id = :org')
+                 ->setParameters([ 'role' => '["ROLE_ADMIN"]','org' => $request->request->get('org')])
                  ->getQuery()->getResult();
 
                  $mailA->send(
@@ -213,16 +221,19 @@ class UserController extends AbstractController
              return $this->json(['valide' =>  $valide]);
 }
 
-#[Route('/indexUser', name: 'app_indexUser', methods: ['GET'])]
+#[Route('/indexUser/{org}', name: 'app_indexUser', methods: ['GET'])]
 public function index(EntityManagerInterface $entityManager,Request $request,): Response
     {
-      
+        $org=$request->attributes->get('org');
+
             $user = $entityManager
             ->getRepository(User::class)
             ->createQueryBuilder('u')
             ->andWhere('u.roles != :role')
             ->andWhere('u.etat = :etat')
-            ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>true])
+            ->join('u.organisation','organisation')
+            ->andWhere('organisation.id = :org')
+            ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>true,'org' => $org])
             ->getQuery()->getResult();
     
             $nb=count($user);
@@ -231,16 +242,19 @@ public function index(EntityManagerInterface $entityManager,Request $request,): 
             
     }
 
-#[Route('/indexUserDésac', name: 'app_indexUserDésac', methods: ['GET'])]
+#[Route('/indexUserDésac/{org}', name: 'app_indexUserDésac', methods: ['GET'])]
     public function indexDésac(EntityManagerInterface $entityManager,Request $request,): Response
         {
-          
+            $org=$request->attributes->get('org');
+
                 $user = $entityManager
                 ->getRepository(User::class)
                 ->createQueryBuilder('u')
                 ->andWhere('u.roles != :role')
                 ->andWhere('u.etat = :etat')
-                ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>false])
+                ->join('u.organisation','organisation')
+                ->andWhere('organisation.id = :org')
+                ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>false,'org' => $org])
                 ->getQuery()->getResult();
         
                 $nb=count($user);
@@ -293,7 +307,7 @@ public function index(EntityManagerInterface $entityManager,Request $request,): 
                   
                     $serializer = new Serializer([new ObjectNormalizer()]);
         
-                    $data = $serializer->normalize($user, null, [AbstractNormalizer::ATTRIBUTES =>  ['sexe','username','id','roles','email','etat','photo','lastname','password']]);
+                    $data = $serializer->normalize($user, null, [AbstractNormalizer::ATTRIBUTES =>  ['sexe','username','id','roles','email','etat','photo','lastname','password', 'organisation' => ['id','nom','secteur' => ['id','titre']] ]]);
                     return $this->json(
                         ['admin' =>  $data]
                     );
@@ -351,6 +365,14 @@ public function index(EntityManagerInterface $entityManager,Request $request,): 
                        $user->setSexe($request->request->get('sexe'));
                        $user->setEmail($request->request->get('email'));
                        $entityManager->persist($user);
+                        $entityManager->flush();
+                        $secteurC = $entityManager
+                        ->getRepository(Secteur::class)
+                        ->find($request->request->get('secteurC'));
+                        $org= $user->getOrganisation();
+                        $org->setNom($request->request->get('nomEntreprise'));
+                        $org->setSecteur($secteurC);
+                        $entityManager->persist($org);
                         $entityManager->flush();
                         return $this->json([
                             'success' =>  'success',

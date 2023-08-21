@@ -40,17 +40,20 @@ class ChefProjetController extends AbstractController
        
         )
     {}  
-    #[Route('/indexChefProjet', name: 'app_indexChefProjet', methods: ['GET'])]
+    #[Route('/indexChefProjet/{org}', name: 'app_indexChefProjet', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager,Request $request,): Response
         {
-            
+            $org=$request->attributes->get('org');
+ 
             $user = $entityManager
             ->getRepository(ChefProjet::class)
             ->createQueryBuilder('c')
             ->join('c.utilisateur','user')
             ->andWhere('user.etat = :etat')
+            ->join('user.organisation','organisation')
+            ->andWhere('organisation.id = :org')
             ->setParameters([
-                    'etat' => true
+                    'etat' => true,'org' => $org
                   ])
             ->getQuery()->getResult();
     
@@ -88,9 +91,11 @@ class ChefProjetController extends AbstractController
                     
             }
 
-#[Route('/secteurChefProjet/{secteur}', name: 'app_secteurChefProjet', methods: ['GET'])]
+#[Route('/secteurChefProjet/{secteur}/{org}', name: 'app_secteurChefProjet', methods: ['GET'])]
         public function secteurChefProjet(EntityManagerInterface $entityManager,Request $request): Response
                 {
+                    $org=$request->attributes->get('org');
+
                    $user = $entityManager
                     ->getRepository(ChefProjet::class)
                     ->createQueryBuilder('m')
@@ -98,9 +103,13 @@ class ChefProjetController extends AbstractController
                     ->join('m.utilisateur','user')
                     ->andWhere('user.etat = :etat')
                     ->andWhere('secteur.id = :id')
+                    ->join('user.organisation','organisation')
+                    ->andWhere('organisation.id = :org')  
                     ->setParameters([
                             'id' => $request->attributes->get('secteur'),
                             'etat' => true
+                            ,'org' => $org
+
                           ])
                     ->getQuery()->getResult();
             

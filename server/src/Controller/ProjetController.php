@@ -13,6 +13,8 @@ use App\Entity\Client;
 use App\Entity\Phase;
 use App\Entity\Etat;
 use App\Entity\EmailNotifications;
+use App\Entity\Organisation;
+use App\Repository\OrganisationRepository;
 use App\Repository\EmailNotificationsRepository;
 use App\Entity\DroitAcces;
 use App\Entity\Task;
@@ -45,6 +47,7 @@ use Symfony\Component\Serializer\Serializer;
 
 class ProjetController extends AbstractController
 {
+
     #[Route('/archivéP/{id}', name: 'app_archivéP')]
     public function archivéP(EntityManagerInterface $entityManager,Request $request,int $id): Response
     {
@@ -73,15 +76,20 @@ class ProjetController extends AbstractController
                     return $this->json(['success' =>  'success']); 
     }
 
-    #[Route('/projet/acces', name: 'app_projet_acces')]
+    #[Route('/projet/acces/{org}', name: 'app_projet_acces')]
     public function projetDesar(EntityManagerInterface $entityManager,Request $request,): Response
     {
+        $org=$request->attributes->get('org');
+
         $projet = $entityManager
         ->getRepository(Projet::class)
         ->createQueryBuilder('m')
         ->andWhere('m.archive = :archive')
+        ->join('m.organisation','organisation')
+        ->andWhere('organisation.id = :org')
         ->setParameters([
-                'archive' => false
+                'archive' => false,
+                'org' => $org
               ])
        
         ->getQuery()->getResult();
@@ -94,15 +102,19 @@ class ProjetController extends AbstractController
             ['projet' =>  $data,'nb' =>  $nb]
         );
     }
-    #[Route('/projet/accesArchive', name: 'app_projet_accesArchive')]
+    #[Route('/projet/accesArchive/{org}', name: 'app_projet_accesArchive')]
     public function ProjetAr(EntityManagerInterface $entityManager,Request $request): Response
     {
+        $org=$request->attributes->get('org');
         $projet = $entityManager
         ->getRepository(Projet::class)
         ->createQueryBuilder('m')
         ->andWhere('m.archive = :archive')
+        ->join('m.organisation','organisation')
+        ->andWhere('organisation.id = :org')
         ->setParameters([
-                'archive' => true
+                'archive' => true,
+                'org' => $org
               ])
         ->getQuery()->getResult();
 
@@ -140,7 +152,12 @@ class ProjetController extends AbstractController
             }
             else{
         $projet = new Projet();
+        $organisation = $entityManager
+        ->getRepository(Organisation::class)
+        ->find($request->request->get('org'));
         $content = json_decode($request->getContent());
+        $projet->setOrganisation($organisation);
+
            $projet->setNom(ucfirst($request->request->get('nom')));
            $projet->setDescription($request->request->get('description'));
            $projet->setDateDebut($request->request->get('dateDebut'));

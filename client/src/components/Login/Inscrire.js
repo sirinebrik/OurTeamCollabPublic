@@ -79,7 +79,8 @@ if (password){
       "secteurC":secteurC,
       "password":password,
       "resetpassword":resetpassword,
-      "photo":photo
+      "photo":photo,
+      "org":decoded.org
     }
     
    

@@ -119,7 +119,7 @@ export default function ProjetList() {
     let userRole=user.roles[0]
 //les projets non archivés 
    const getProjets = (async () => {
-    await Axios.get(`http://localhost:8000/projet/acces`).then((response)=>{
+    await Axios.get(`http://localhost:8000/projet/acces/${user.org}`).then((response)=>{
      setProjets(response.data.projet)
      setFilteredProjets(response.data.projet)
      setIsLoding(false);
@@ -127,7 +127,7 @@ export default function ProjetList() {
     useEffect( () => {getProjets();},[]) ;
 //les projets archivés    
     const getProjetsA = (async () => {
-        await Axios.get(`http://localhost:8000/projet/accesArchive`).then((response)=>{
+        await Axios.get(`http://localhost:8000/projet/accesArchive/${user.org}`).then((response)=>{
          setProjetsA(response.data.projet)
          setFilteredProjetsA(response.data.projet)
          
@@ -229,7 +229,7 @@ let myEventsList = []
  useEffect( () => {getSecteurs();},[]) ; 
 //get client par secteur                   
 const getSecteurClients = (async () => {
-    await Axios.get(`http://localhost:8000/secteurClient/${secteur}`).then((response)=>{
+    await Axios.get(`http://localhost:8000/secteurClient/${secteur}/${user.org}`).then((response)=>{
                       setSecteurClients(response.data.user)
                     })  });
     useEffect( () => {getSecteurClients(); },[]) ;
@@ -238,7 +238,7 @@ const getSecteurClients = (async () => {
         optionsCSecteur.push( { label: item.utilisateur.username+" "+item.utilisateur.lastname, value: item.utilisateur.id }) ))                       
 //get chef projet par secteur               
 const getSecteurChefProjets = (async () => {
-     await Axios.get(`http://localhost:8000/secteurChefProjet/${secteur}`).then((response)=>{
+     await Axios.get(`http://localhost:8000/secteurChefProjet/${secteur}/${user.org}`).then((response)=>{
                       
                         setSecteurChefs(response.data.user)
                         })  });
@@ -248,7 +248,7 @@ const getSecteurChefProjets = (async () => {
              optionsChSecteur.push( { label: item.utilisateur.username+" "+item.utilisateur.lastname, value: item.utilisateur.id }) ))                       
 //tous les clients
 const getClients = (async () => {
-    await Axios.get(`http://localhost:8000/indexClient`).then((response)=>{
+    await Axios.get(`http://localhost:8000/indexClient/${user.org}`).then((response)=>{
      setClients(response.data.user)
     })  });
     useEffect( () => {getClients();},[]) ;
@@ -257,7 +257,7 @@ const getClients = (async () => {
          optionsC.push( { label: item.utilisateur.username+" "+item.utilisateur.lastname, value: item.utilisateur.id }) ))                       
 //tous les chefs de projets
 const getChefProjets = (async () => {
-        await Axios.get(`http://localhost:8000/indexChefProjet`).then((response)=>{
+        await Axios.get(`http://localhost:8000/indexChefProjet/${user.org}`).then((response)=>{
          setChefProjets(response.data.user)
         })  });
         useEffect( () => {getChefProjets();},[]) ;     
@@ -266,7 +266,7 @@ const getChefProjets = (async () => {
         optionsCh.push( { label: item.utilisateur.username+" "+item.utilisateur.lastname, value: item.utilisateur.id }) ))  
 //les membres
 const getMembres = (async () => {
-    await Axios.get(`http://localhost:8000/indexMembre`).then((response)=>{
+    await Axios.get(`http://localhost:8000/indexMembre/${user.org}`).then((response)=>{
      setMembres(response.data.user)
     })  });
     useEffect( () => {getMembres();},[]) ;  
@@ -298,7 +298,7 @@ const onSubmitHandler = (e) => {
           "chef":chef,
           "membre":membre,
           "document":document,
-         
+          "org":user.org,
         }
     Axios.post(`http://localhost:8000/ajouterProjet`, formData,{
         headers: {

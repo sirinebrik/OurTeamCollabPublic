@@ -18,6 +18,8 @@ export default function DetailAdmin({user,userRole}) {
     const [errorP, setErrorP] = useState("");
     const [errorDP, setErrorDP] = useState("");
     const [role,setRole]= useState("")
+    const [secteur,setSecteur]= useState([])
+    const [organisation,setOrganisation]= useState([])
     const [show, setShow] = useState(false);
     const [showP, setShowP] = useState(false);
     const [email, setEmail] = useState("");
@@ -28,6 +30,17 @@ export default function DetailAdmin({user,userRole}) {
     const [resetpassword, setResetpassword] = useState();
     const [passwordIsVisible, setPasswordIsVisible] = useState(false);
     const [passwordIsVisible1, setPasswordIsVisible1] = useState(false);
+    const [secteurs,setSecteurs]= useState([])
+    const [secteurC, setSecteurC] = useState("");
+    const [nomE, setNomE] = useState("");
+
+    const getSecteurs = (async () => {
+        await Axios.get("http://localhost:8000/secteur").then((response)=>{
+           setSecteurs(response.data.secteur)})  
+    });
+     useEffect( () => {
+          getSecteurs();
+     },[]) ;
     let button;
     let button1;
   //password
@@ -51,6 +64,11 @@ export default function DetailAdmin({user,userRole}) {
            setEmail(response.data.admin[0].email)
            setSexe(response.data.admin[0].sexe)
            setRole(response.data.admin[0].roles[0])
+           setOrganisation(response.data.admin[0].organisation)
+           setSecteurC(response.data.admin[0].organisation.secteur.id)
+           setSecteur(response.data.admin[0].organisation.secteur)
+           setNomE(response.data.admin[0].organisation.nom)
+
            setIsLoding(false);
         })  });
         useEffect( () => {getAdmin(); },[]) ;
@@ -76,7 +94,9 @@ export default function DetailAdmin({user,userRole}) {
       "username" : prenom,
       "lastname":nom,
       "email":email,
-      "sexe":sexe,}
+      "sexe":sexe,
+      "nomEntreprise":nomE,
+      "secteurC":secteurC,}
     try {
       const res = await Axios.post(
         `http://localhost:8000/updateA/${id}`,
@@ -187,8 +207,12 @@ return (
                              {admin.sexe==="homme" &&<p title="sexe" style={{color:"black"}}><i class=" me-1  fa fa-male" style={{fontSize:"13px",color:"#0B0A42"}}></i>Homme</p>}
                              <div class="mb-1 mt-3" style={{fontSize:"13px",color:"#0B0A42",fontWeight:"bold"}}>Rôle</div>
                              <p title="rôle" style={{color:"black"}}><i class=" me-1  fa fa-user" style={{fontSize:"13px",color:"#0B0A42"}}></i>Administrateur</p>
-                             
-                              
+                              <div class="mb-1 mt-1" style={{fontSize:"13px",color:"#0B0A42",fontWeight:"bold"}}>Entreprise</div>
+                                <p title="nom Entreprise" style={{color:"black" }}><i class=" me-1  fa fa-university " style={{fontSize:"13px",color:"#0B0A42"}}></i>{organisation.nom}</p>
+                               
+                                   <div class="mb-1 mt-1" style={{fontSize:"13px",color:"#0B0A42",fontWeight:"bold"}}>Secteur d'activité</div>
+                                <p title="secteur" style={{color:"black",marginLeft:"6px" }}>{secteur.titre}</p>
+                                 
                             </div>
                         </div>
                     </div>
@@ -276,6 +300,23 @@ return (
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                            <div class="col-6">
+                                <div className="mb-3 text-start"><label className="form-label" style={{color:"#06868D"}}>Nom de l'organisation <span style={{color:"red"}}>*</span></label>
+                                   <input className="form-control  form-icon-input" name="nomE"  type="text" value={nomE} onChange={(e)=>setNomE(e.target.value)} placeholder="saisir nom de l'entreprise" required="required"/>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                               <div className="mb-3 text-start"><label className="form-label" style={{color:"#06868D"}}>Le secteur d'activité <span style={{color:"red"}}>*</span></label>
+                                   <select value={secteurC} required onChange={ (e) =>  setSecteurC(e.target.value)}  style ={{fontSize:"13px",paddingBottom:"5px",paddingTop:"5px"}}class="form-select">
+                                   {
+                                       secteurs.map((item,index)=>(
+                                    <option   key={item.id} value={item.id} selected={item.id===secteurC &&"selected"}>{item.titre}</option>
+                                    )) }
+                                    </select> 
+                                </div>
+                            </div>
+                        </div>
                 <div class="mt-4" style={{ textAlign:"right" }}>
                   
                     <button type="submit" class="btn"  disabled={(!sexe ||!nom||!prenom||!email) &&"disabled" }   style={{ backgroundColor:"#06868D" , color:"white" ,fontSize:"14px",fontWeight:"bold" ,padding:"10px"}}>

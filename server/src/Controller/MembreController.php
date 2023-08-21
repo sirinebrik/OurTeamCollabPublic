@@ -40,18 +40,21 @@ class MembreController extends AbstractController
        
         )
     {}  
-    #[Route('/indexMembre', name: 'app_indexMembre', methods: ['GET'])]
+    #[Route('/indexMembre/{org}', name: 'app_indexMembre', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager,Request $request,): Response
         {
-          
+            $org=$request->attributes->get('org');
+
         
             $user = $entityManager
             ->getRepository(Membre::class)
             ->createQueryBuilder('m')
             ->join('m.utilisateur','user')
             ->andWhere('user.etat = :etat')
+            ->join('user.organisation','organisation')
+            ->andWhere('organisation.id = :org')  
             ->setParameters([
-                    'etat' => true
+                    'etat' => true,'org' => $org
                   ])
             ->getQuery()->getResult();
     
@@ -88,18 +91,23 @@ class MembreController extends AbstractController
             }
 
 
-#[Route('/departementMembre/{departement}', name: 'app_departementMembre', methods: ['GET'])]
+#[Route('/departementMembre/{departement}/{org}', name: 'app_departementMembre', methods: ['GET'])]
     public function departementMembre(EntityManagerInterface $entityManager,Request $request): Response
                 {
+                    $org=$request->attributes->get('org');
+
                    $user = $entityManager
                     ->getRepository(Membre::class)
                     ->createQueryBuilder('m')
                     ->andWhere('m.departement = :departement')
                     ->join('m.utilisateur','user')
                     ->andWhere('user.etat = :etat')
+                    ->join('user.organisation','organisation')
+                    ->andWhere('organisation.id = :org')  
                     ->setParameters([
                             'departement' => $request->attributes->get('departement'),
                             'etat'=>true
+                            ,'org' => $org
                           ])
                     ->getQuery()->getResult();
             

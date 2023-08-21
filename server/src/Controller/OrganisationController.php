@@ -37,120 +37,70 @@ use Symfony\Component\Serializer\Serializer;
 
 class OrganisationController extends AbstractController
 {
+    #[Route('/org', name: 'app_org')]
+    public function index(): Response
+    {
+        return $this->render('organisation/index.html.twig', [
+            'controller_name' => 'OrganisationController',
+        ]);
+    }
     #[Route('/organisation', name: 'app_organisation')]
-    public function index(Request $request,EntityManagerInterface $entityManager,
-    SendMailValidInscriptionA $mailA,SendMailValidInscription $mail,
+    public function org(Request $request,EntityManagerInterface $entityManager,
        UserPasswordHasherInterface $passwordHasher,FileUploader $fileUploader): Response
    
-          { $user = new User();
-              $membre = new Membre();
-              $chefProjet = new ChefProjet();
-              $client = new Client();
-              $content = json_decode($request->getContent());
-             
-             
-              $password=$request->request->get('password');
-              $resetpassword=$request->request->get('resetpassword');
-
-              if($password===$resetpassword){
-                  $user->setPassword(
-                      $passwordHasher->hashPassword(
-                          $user,
-                          $password ));
-                 $user->setUsername(ucfirst($request->request->get('username')));
-                 $user->setLastname(ucfirst($request->request->get('lastname')));
-                 $user->setSexe($request->request->get('sexe'));
-                 $user->setEmail($request->request->get('email'));
-                 $date=new \DateTime('now');
-                 $user->setDateAjout($date);
-                 $image=$request->files->get('photo');
-                 
-                 if($image){
-                  $file = new UploadedFile($image,"demandeFile");
-                  $fileName = $fileUploader->upload($file);
-                  $user->setPhoto($fileName);
-                 
-              } 
-              $user->setEtat(true);
-              if($request->request->get('role')==="membre") {
-                           $user->setRoles(['ROLE_MEMBRE']);
-                           $entityManager->persist($user);
-                           $entityManager->flush();
-                            $membre->setDepartement($request->request->get('departement'));
-                            $membre->setUtilisateur($user);
-                            $entityManager->persist($membre);
-                            $entityManager->flush();
-                       }
-              if($request->request->get('role')==="chef de projet") {
-               $secteur =  $entityManager
-               ->getRepository(Secteur::class)
-               ->find($request->request->get('secteur'));
-              $user->setRoles(['ROLE_CHEFPROJET']);
-              $entityManager->persist($user);
-              $entityManager->flush();
-              $chefProjet->setSecteur($secteur);
-              $chefProjet->setUtilisateur($user);
-                            $entityManager->persist($chefProjet);
-                            $entityManager->flush();
-              }
-              if($request->request->get('role')==="client") {
-               $secteurC = $entityManager
-               ->getRepository(Secteur::class)
-               ->find($request->request->get('secteurC'));
-               $user->setRoles(['ROLE_CLIENT']);
-               $entityManager->persist($user);
-               $entityManager->flush();
-               $client->setNomEntreprise($request->request->get('nomEntreprise'));
-               $client->setSecteur($secteurC);
-               $client->setUtilisateur($user);
-                            $entityManager->persist($client);
-                            $entityManager->flush();
-   
-               }
-               $admin=$entityManager
-               ->getRepository(User::class)
-               ->createQueryBuilder('u')
-               ->andWhere('u.roles = :role')
-               ->setParameters([ 'role' => '["ROLE_ADMIN"]'])
-               ->getQuery()->getResult();
-
-               $mailA->send(
-                   'ourteamcollab@gmail.com',
-                   $admin[0]->getEmail(),
-                   ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname')),
-                  
-                   ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname')).' '." vient de s'inscrire sur la plateforme Acollab",
+       
+        
+               { $user = new User();
+                   $organisation = new Organisation();
+                   $content = json_decode($request->getContent());
                   
                   
-               );
-               $email = new EmailNotifications();
-               $email->setUser($admin[0]);
-               $email->setStatus(0);
-               $email->setObjet(ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname')).' '." vient de s'inscrire sur la plateforme Acollab"
-              );
-              $email->setContenu("Bonjour, \n".ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname'))
-              ." vient de s'inscrire sur la plateforme Our Team Collab.");
-              $email->setDate(date("Y-m-d"));
-              $email->setHeure(date("H:i"));
-              $entityManager->persist($email);
-              $entityManager->flush();
-
-               $mail->send(
-                   'ourteamcollab@gmail.com',
-                   $request->request->get('email'),
-                   ucfirst($request->request->get('username')).' '.ucfirst($request->request->get('lastname')),
-                  
-                   "Création de votre compte",);
-                   
-               return $this->json([
-                       'success' =>  'success',
-                         ]);
-           }
-               
-               else{
-                   return $this->json([
-                       'danger' =>  "Les deux mots de passe ne sont pas identiques. Veuillez les ressaisir.", ] , Response::HTTP_NOT_ACCEPTABLE);
-               } 
+                   $password=$request->request->get('password');
+                   $resetpassword=$request->request->get('resetpassword');
+     
+                   if($password===$resetpassword){
+                     $secteurC = $entityManager
+                     ->getRepository(Secteur::class)
+                     ->find($request->request->get('secteurC'));
+                     $organisation->setNom($request->request->get('nomOrganisation'));
+                     $organisation->setSecteur($secteurC);
+                                  $entityManager->persist($organisation);
+                                  $entityManager->flush();
+     
+                       $user->setPassword(
+                           $passwordHasher->hashPassword(
+                               $user,
+                               $password ));
+                      $user->setUsername(ucfirst($request->request->get('username')));
+                      $user->setLastname(ucfirst($request->request->get('lastname')));
+                      $user->setSexe($request->request->get('sexe'));
+                      $user->setEmail($request->request->get('email'));
+                      $date=new \DateTime('now');
+                      $user->setDateAjout($date);
+                      $image=$request->files->get('photo');
+                      
+                      if($image){
+                       $file = new UploadedFile($image,"demandeFile");
+                       $fileName = $fileUploader->upload($file);
+                       $user->setPhoto($fileName);
+                      
+                   } 
+                   $user->setEtat(true);
+                    $user->setRoles(['ROLE_ADMIN']);
+                    $user->setOrganisation($organisation);
+     
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                      
+                    return $this->json([
+                            'success' =>  'success',
+                              ]);
+                }
+                    
+                    else{
+                        return $this->json([
+                            'danger' =>  "Les deux mots de passe ne sont pas identiques. Veuillez les ressaisir.", ] , Response::HTTP_NOT_ACCEPTABLE);
+                    } 
        }
     
 }

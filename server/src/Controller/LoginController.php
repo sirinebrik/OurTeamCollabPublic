@@ -44,7 +44,8 @@ class LoginController extends AbstractController
              
             ], Response::HTTP_UNAUTHORIZED);
         }
-        $jwtToken = $this->encoder->encode(['username' => $user->getUserIdentifier(), 'name' => $user->getUsername(),'lastname' => $user->getLastname(),'roles' => $user->getRoles(), 'id' => $user->getId()]);
+        
+        $jwtToken = $this->encoder->encode(['username' => $user->getUserIdentifier(), 'name' => $user->getUsername(),'lastname' => $user->getLastname(),'roles' => $user->getRoles(), 'id' => $user->getId(), 'org' => $user->getOrganisation()->getId()]);
         return new JsonResponse(['token' => $jwtToken], Response::HTTP_CREATED);
     
     }

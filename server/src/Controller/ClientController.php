@@ -40,17 +40,20 @@ class ClientController extends AbstractController
        
         )
     {}  
-    #[Route('/indexClient', name: 'app_indexClient', methods: ['GET'])]
+    #[Route('/indexClient/{org}', name: 'app_indexClient', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager,Request $request,): Response
         {
-           
+            $org=$request->attributes->get('org');
+
             $user = $entityManager
             ->getRepository(Client::class)
             ->createQueryBuilder('m')
             ->join('m.utilisateur','user')
             ->andWhere('user.etat = :etat')
-            ->setParameters([
-                    'etat' => true
+            ->join('user.organisation','organisation')
+            ->andWhere('organisation.id = :org')          
+              ->setParameters([
+                    'etat' => true,'org' => $org
                   ])
             ->getQuery()->getResult();
             
@@ -84,9 +87,11 @@ class ClientController extends AbstractController
                     
             }
         
-#[Route('/secteurClient/{secteurC}', name: 'app_secteurClient', methods: ['GET'])]
+#[Route('/secteurClient/{secteurC}/{org}', name: 'app_secteurClient', methods: ['GET'])]
     public function secteurClient(EntityManagerInterface $entityManager,Request $request): Response
             {
+                $org=$request->attributes->get('org');
+
                $user = $entityManager
                 ->getRepository(Client::class)
                 ->createQueryBuilder('m')
@@ -94,9 +99,12 @@ class ClientController extends AbstractController
                 ->join('m.utilisateur','user')
                 ->andWhere('user.etat = :etat')
                 ->andWhere('secteur.id = :id')
+                ->join('user.organisation','organisation')
+                ->andWhere('organisation.id = :org')  
                 ->setParameters([
                         'id' => $request->attributes->get('secteurC'),
                         'etat' => true
+                        ,'org' => $org
                       ])
                 ->getQuery()->getResult();
         

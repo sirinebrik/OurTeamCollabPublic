@@ -9,6 +9,10 @@ login:
     path:       /login
     controller: App\Controller\LoginController::login
     methods: POST
+ajouterOganisation:
+    path:       /ajouterOganisation
+    controller: App\Controller\OrganisationController::ajouterOganisation
+    methods: POST
 forgotPassword:
     path:       /forgotPassword/{email}
     controller: App\Controller\LoginController::forgotPassword
