@@ -55,7 +55,7 @@ export default function IndexAdmin({typeSelect}) {
 
   //admin
   const getUser = (async () => {
-    await Axios.get(`http://localhost:8000/dashboardUser`
+    await Axios.get(`http://localhost:8000/dashboardUser/${user1.org}`
     )
     .then((response)=>{
   setNbTousUser(response.data.nb)
@@ -70,7 +70,7 @@ export default function IndexAdmin({typeSelect}) {
           backgroundColor: ['#06868D','rgba(221,0,67,3)',],
           borderWidth: 1,},],    } 
   const getProjet = (async () => {
-    await Axios.get(`http://localhost:8000/dashboardProjet`
+    await Axios.get(`http://localhost:8000/dashboardProjet/${user1.org}`
     )
     .then((response)=>{
     setNbTousProjet(response.data.n)
@@ -87,7 +87,7 @@ export default function IndexAdmin({typeSelect}) {
 
 
     const getTaskProjet = (async () => {
-            await Axios.get(`http://localhost:8000/taskProjetRealise`
+            await Axios.get(`http://localhost:8000/taskProjetRealise/${user1.org}`
             )
             .then((response)=>{
             setProjetTask(response.data.projet)
@@ -104,7 +104,7 @@ export default function IndexAdmin({typeSelect}) {
                   borderWidth: 1,},],    } 
 
           const getProjetParUser = (async () => {
-            await Axios.get(`http://localhost:8000/ProjetParUser`
+            await Axios.get(`http://localhost:8000/ProjetParUser/${user1.org}`
             )
             .then((response)=>{
             setProjetUser(response.data.user)
@@ -124,7 +124,7 @@ export default function IndexAdmin({typeSelect}) {
           borderWidth: 1,},],    }
 
           const getUserParProjet = (async () => {
-            await Axios.get(`http://localhost:8000/userParProjet`
+            await Axios.get(`http://localhost:8000/userParProjet/${user1.org}`
             )
             .then((response)=>{
             setUserProjet(response.data.projet)
@@ -144,7 +144,7 @@ export default function IndexAdmin({typeSelect}) {
           borderWidth: 1,},],    }
           
           const getProjetMembreChef = (async () => {
-            await Axios.get(`http://localhost:8000/membreChefProjet`
+            await Axios.get(`http://localhost:8000/membreChefProjet/${user1.org}`
             )
             .then((response)=>{
             setProjetMembreChef(response.data.membre)
@@ -164,7 +164,7 @@ export default function IndexAdmin({typeSelect}) {
           borderWidth: 1,},],    }
 
   const getProjetChefChef = (async () => {
-            await Axios.get(`http://localhost:8000/chefChefProjet`
+            await Axios.get(`http://localhost:8000/chefChefProjet/${user1.org}`
             )
             .then((response)=>{
             setProjetChefChef(response.data.chef)
@@ -183,7 +183,7 @@ export default function IndexAdmin({typeSelect}) {
           borderWidth: 1,},],    }
 
   const getProjetMembreMembre= (async () => {
-            await Axios.get(`http://localhost:8000/membreMembreProjet`
+            await Axios.get(`http://localhost:8000/membreMembreProjet/${user1.org}`
             )
             .then((response)=>{
             setProjetMembreMembre(response.data.membre)
@@ -203,7 +203,7 @@ export default function IndexAdmin({typeSelect}) {
           borderWidth: 1,},],    }
 
   const getProjetClientChef = (async () => {
-            await Axios.get(`http://localhost:8000/clientClientProjet`
+            await Axios.get(`http://localhost:8000/clientClientProjet/${user1.org}`
             )
             .then((response)=>{
             setProjetClientClient(response.data.client)
@@ -222,7 +222,7 @@ export default function IndexAdmin({typeSelect}) {
           backgroundColor: ['#06868D'],
           borderWidth: 1,},],    }
   const getUserRole = (async () => {
-        await Axios.get(`http://localhost:8000/dashboardUserRole`
+        await Axios.get(`http://localhost:8000/dashboardUserRole/${user1.org}`
         )
         .then((response)=>{
       setChef(response.data.nbCh)
@@ -237,7 +237,7 @@ export default function IndexAdmin({typeSelect}) {
               backgroundColor: ['#06868D'],
               borderWidth: 1,},],    } 
   const getChef = (async () => {
-    await Axios.get(`http://localhost:8000/dashboardUserChef`
+    await Axios.get(`http://localhost:8000/dashboardUserChef/${user1.org}`
     )
     .then((response)=>{
     setSecteurChef(response.data.chef)
@@ -258,7 +258,7 @@ secteurCh.map((item,index)=>(dataCounter.push(0)    ))
           backgroundColor: ['#06868D'],
           borderWidth: 1,},],    } 
 const getMembre = (async () => {
-      await Axios.get(`http://localhost:8000/dashboardUserMembre`
+      await Axios.get(`http://localhost:8000/dashboardUserMembre/${user1.org}`
       )
       .then((response)=>{
       setDepartement(response.data.departement)
@@ -278,7 +278,7 @@ departement.map((item,index)=>(dataCounterM.push(0)    ))
           backgroundColor: ['#06868D'],
           borderWidth: 1,},],    } 
     const getClient = (async () => {
-      await Axios.get(`http://localhost:8000/dashboardUserClient`
+      await Axios.get(`http://localhost:8000/dashboardUserClient/${user1.org}`
       )
       .then((response)=>{
       setSecteurClient(response.data.client)

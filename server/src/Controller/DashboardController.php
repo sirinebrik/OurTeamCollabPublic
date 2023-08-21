@@ -49,12 +49,17 @@ use App\Service\SendMailServiceAnnulerReunion;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/dashboardProjet', name: 'app_dashboardProjet')]
+    #[Route('/dashboardProjet/{org}', name: 'app_dashboardProjet')]
     public function dashboardProjet(EntityManagerInterface $entityManager,Request $request,): Response
-    {
+    { $org=$request->attributes->get('org');
         $p = $entityManager
         ->getRepository(Projet::class)
-        ->createQueryBuilder('m')      
+        ->createQueryBuilder('m')  
+        ->join('m.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+    ->setParameters([
+        'org' => $org
+      ])    
         ->getQuery()->getResult();
          $n=count($p); 
 
@@ -62,8 +67,11 @@ class DashboardController extends AbstractController
         ->getRepository(Projet::class)
         ->createQueryBuilder('m')
         ->andWhere('m.archive = :archive')
+        ->join('m.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+   
         ->setParameters([
-                'archive' => false
+                'archive' => false, 'org' => $org
               ])
        
         ->getQuery()->getResult();
@@ -73,8 +81,10 @@ class DashboardController extends AbstractController
          ->getRepository(Projet::class)
          ->createQueryBuilder('m')
          ->andWhere('m.archive = :archive')
+         ->join('m.organisation','organisation')
+         ->andWhere('organisation.id = :org')  
          ->setParameters([
-                 'archive' => true
+                 'archive' => true, 'org' => $org
                ])
          ->getQuery()->getResult();
  
@@ -134,14 +144,17 @@ class DashboardController extends AbstractController
 
 
 
-    #[Route('/dashboardUser', name: 'app_dashboardUser', methods: ['GET'])]
+    #[Route('/dashboardUser/{org}', name: 'app_dashboardUser', methods: ['GET'])]
 public function dashboardUser(EntityManagerInterface $entityManager,Request $request,): Response
-    {
+    {    $org=$request->attributes->get('org');
+
         $user = $entityManager
         ->getRepository(User::class)
         ->createQueryBuilder('u')
         ->andWhere('u.roles != :role')
-        ->setParameters([ 'role' => '["ROLE_ADMIN"]'])
+        ->join('u.organisation','organisation')
+        ->andWhere('organisation.id = :org')  
+        ->setParameters([ 'role' => '["ROLE_ADMIN"]', 'org' => $org])
         ->getQuery()->getResult();
         $nb=count($user);
 
@@ -150,7 +163,9 @@ public function dashboardUser(EntityManagerInterface $entityManager,Request $req
             ->createQueryBuilder('u')
             ->andWhere('u.roles != :role')
             ->andWhere('u.etat = :etat')
-            ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>true])
+            ->join('u.organisation','organisation')
+            ->andWhere('organisation.id = :org')  
+            ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>true, 'org' => $org])
             ->getQuery()->getResult();
             $nbA=count($userA);
 
@@ -159,7 +174,9 @@ public function dashboardUser(EntityManagerInterface $entityManager,Request $req
             ->createQueryBuilder('u')
             ->andWhere('u.roles != :role')
             ->andWhere('u.etat = :etat')
-            ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>false])
+            ->join('u.organisation','organisation')
+            ->andWhere('organisation.id = :org')  
+            ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>false, 'org' => $org])
             ->getQuery()->getResult();
             $nbN=count($userN);
 
@@ -168,7 +185,9 @@ public function dashboardUser(EntityManagerInterface $entityManager,Request $req
             ->createQueryBuilder('u')
             ->andWhere('u.roles != :role')
             ->andWhere('u.etat = :etat')
-            ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>true])
+            ->join('u.organisation','organisation')
+            ->andWhere('organisation.id = :org')  
+            ->setParameters([ 'role' => '["ROLE_ADMIN"]','etat'=>true, 'org' => $org])
             ->getQuery()->getResult();
             $nbC=count($client);
       
@@ -178,38 +197,68 @@ public function dashboardUser(EntityManagerInterface $entityManager,Request $req
 
 
     
-    #[Route('/dashboardUserRole', name: 'app_dashboardRole', methods: ['GET'])]
+    #[Route('/dashboardUserRole/{org}', name: 'app_dashboardRole', methods: ['GET'])]
 public function dashboardUserRole(EntityManagerInterface $entityManager,Request $request,): Response
-    {
+    {    $org=$request->attributes->get('org');
+
         $client = $entityManager
         ->getRepository(Client::class)
         ->createQueryBuilder('m')
+       ->join('m.utilisateur','user')
+
+        ->join('user.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+    ->setParameters([
+        'org' => $org
+      ])
         ->getQuery()->getResult();
         $nbC=count($client);
 
         $chef = $entityManager
         ->getRepository(ChefProjet::class)
         ->createQueryBuilder('m')
+        ->join('m.utilisateur','user')
+
+        ->join('user.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+    ->setParameters([
+        'org' => $org
+      ])
         ->getQuery()->getResult();
         $nbCh=count($chef);
       
         $membre = $entityManager
         ->getRepository(Membre::class)
         ->createQueryBuilder('m')
+        ->join('m.utilisateur','user')
+
+        ->join('user.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+    ->setParameters([
+        'org' => $org
+      ])
         ->getQuery()->getResult();
         $nbM=count($membre);
             return $this->json(['nbC' =>  $nbC,'nbM' =>  $nbM,'nbCh' =>  $nbCh]);
             
     }
 
-    #[Route('/dashboardUserClient', name: 'app_dashboardUserClient', methods: ['GET'])]
+    #[Route('/dashboardUserClient/{org}', name: 'app_dashboardUserClient', methods: ['GET'])]
     public function dashboardUserClient(EntityManagerInterface $entityManager,Request $request,): Response
-    {
+    {    $org=$request->attributes->get('org');
+
         $client = $entityManager
         ->getRepository(Client::class)
         ->createQueryBuilder('m')
         ->select('secteur.titre, count(m.id) as counter')
         ->join('m.secteur','secteur')
+        ->join('m.utilisateur','user')
+
+        ->join('user.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+    ->setParameters([
+        'org' => $org
+      ])
         ->groupBy('secteur.id')
         ->getQuery()->getResult();
 
@@ -225,7 +274,12 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
             ->createQueryBuilder('m')
             ->join('m.secteur','secteur')
             ->andWhere('secteur.id = :id')
-            ->setParameters([ 'id' =>$secteur->getId()])
+            ->join('m.utilisateur','user')
+
+            ->join('user.organisation','organisation')
+        ->andWhere('organisation.id = :org')  
+       
+            ->setParameters([ 'id' =>$secteur->getId(), 'org' => $org])
             ->getQuery()->getResult();
             if(count($test)===0){
              $data[$i]=$secteur->getTitre();
@@ -237,15 +291,21 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
             
     }
 
-    #[Route('/dashboardUserChef', name: 'app_dashboardUserChef', methods: ['GET'])]
+    #[Route('/dashboardUserChef/{org}', name: 'app_dashboardUserChef', methods: ['GET'])]
     public function dashboardUserChef(EntityManagerInterface $entityManager,Request $request,): Response
-    {
+    {    $org=$request->attributes->get('org');
+
         $chef = $entityManager
         ->getRepository(ChefProjet::class)
         ->createQueryBuilder('m')
         ->select('secteur.titre, count(m.id) as counter')
         ->join('m.secteur','secteur')
-        ->groupBy('secteur.id')
+        ->join('m.utilisateur','user')
+        ->join('user.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+    ->setParameters([
+        'org' => $org
+      ])        ->groupBy('secteur.id')
         ->getQuery()->getResult();
 
         $secteur = $entityManager
@@ -260,7 +320,12 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
             ->createQueryBuilder('m')
             ->join('m.secteur','secteur')
             ->andWhere('secteur.id = :id')
-            ->setParameters([ 'id' =>$secteur->getId()])
+            ->join('m.utilisateur','user')
+
+            ->join('user.organisation','organisation')
+        ->andWhere('organisation.id = :org')  
+        
+            ->setParameters([ 'id' =>$secteur->getId(),'org' => $org])
             ->getQuery()->getResult();
             if(count($test)===0){
              $data[$i]=$secteur->getTitre();
@@ -272,13 +337,20 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
             
     }
 
-    #[Route('/dashboardUserMembre', name: 'app_dashboardUserMembre', methods: ['GET'])]
+    #[Route('/dashboardUserMembre/{org}', name: 'app_dashboardUserMembre', methods: ['GET'])]
     public function dashboardUserMembre(EntityManagerInterface $entityManager,Request $request,): Response
-    {
+    {    $org=$request->attributes->get('org');
+
         $membre = $entityManager
         ->getRepository(Membre::class)
         ->createQueryBuilder('m')
         ->select('m.departement, count(m.id) as counter')
+        ->join('m.utilisateur','user')
+
+        ->join('user.organisation','organisation')
+    ->andWhere('organisation.id = :org')  
+    
+        ->setParameters([ 'org' => $org])
         ->groupBy('m.departement')
         ->getQuery()->getResult();
 
@@ -290,7 +362,12 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
             ->getRepository(Membre::class)
             ->createQueryBuilder('m')
             ->andWhere('m.departement = :departement')
-            ->setParameters([ 'departement' =>$depart])
+            ->join('m.utilisateur','user')
+
+            ->join('user.organisation','organisation')
+        ->andWhere('organisation.id = :org')  
+        
+            ->setParameters([ 'departement' =>$depart,'org' => $org])
             ->getQuery()->getResult();
             if(count($test)===0){
              $data[$i]=$depart;
@@ -301,37 +378,51 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
             return $this->json(['membre' =>  $membre,'departement' =>  $data]);
             
     }
-    #[Route('/ProjetParUser', name: 'app_ProjetParUser')]
+    #[Route('/ProjetParUser/{org}', name: 'app_ProjetParUser')]
     public function ProjetParUser(EntityManagerInterface $entityManager,Request $request): Response
-    {
+    {    $org=$request->attributes->get('org');
+
        $user = $entityManager
        ->getRepository(DroitAcces::class)
        ->createQueryBuilder('m')
        ->select('user.username,user.lastname, count(m.id) as counter')
        ->join('m.user','user')
+       ->join('m.projet','projet')
+       ->join('projet.organisation','organisation')
+       ->andWhere('organisation.id = :org')  
+       ->setParameters([
+           'org' => $org
+         ])
        ->groupBy('user.id')
        ->getQuery()->getResult();
 
        return $this->json(['user' =>  $user]
     ); 
     }
-    #[Route('/userParProjet', name: 'app_UserParProjet')]
+    #[Route('/userParProjet/{org}', name: 'app_UserParProjet')]
     public function UserParProjet(EntityManagerInterface $entityManager,Request $request): Response
-    {
+    {    $org=$request->attributes->get('org');
+
        $projet = $entityManager
        ->getRepository(DroitAcces::class)
        ->createQueryBuilder('m')
        ->select('projet.nom, count(m.id) as counter')
        ->join('m.projet','projet')
+       ->join('projet.organisation','organisation')
+       ->andWhere('organisation.id = :org')  
+       ->setParameters([
+           'org' => $org
+         ])
        ->groupBy('projet.id')
        ->getQuery()->getResult();
 
        return $this->json(['projet' =>  $projet]
     ); 
     }
-    #[Route('/membreChefProjet', name: 'app_MembreChefProjet')]
+    #[Route('/membreChefProjet/{org}', name: 'app_MembreChefProjet')]
     public function MembreChefProjet(EntityManagerInterface $entityManager,Request $request): Response
-    {
+    {    $org=$request->attributes->get('org');
+
        $membre = $entityManager
        ->getRepository(DroitAcces::class)
        ->createQueryBuilder('m')
@@ -339,25 +430,31 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
        ->join('m.user','user')
        ->andWhere('user.roles = :roles')
        ->andWhere('m.role = :role')
+       ->join('user.organisation','organisation')
+       ->andWhere('organisation.id = :org')  
        ->setParameters([ 'roles' => '["ROLE_MEMBRE"]',
-       'role' => 'chefProjet'
+       'role' => 'chefProjet','org' => $org
        ])
+
        ->groupBy('user.id')
        ->getQuery()->getResult();
 
        return $this->json(['membre' =>  $membre]
     ); 
     }
-    #[Route('/chefChefProjet', name: 'app_chefChefProjet')]
+    #[Route('/chefChefProjet/{org}', name: 'app_chefChefProjet')]
     public function chefChefProjet(EntityManagerInterface $entityManager,Request $request): Response
-    {
+    {    $org=$request->attributes->get('org');
+
        $chef = $entityManager
        ->getRepository(DroitAcces::class)
        ->createQueryBuilder('m')
        ->select('user.username,user.lastname, count(m.id) as counter')
        ->join('m.user','user')
        ->andWhere('user.roles = :roles')
-       ->setParameters([ 'roles' => '["ROLE_CHEFPROJET"]',
+       ->join('user.organisation','organisation')
+       ->andWhere('organisation.id = :org') 
+       ->setParameters([ 'roles' => '["ROLE_CHEFPROJET"]','org' => $org
        ])
        ->groupBy('user.id')
        ->getQuery()->getResult();
@@ -365,16 +462,18 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
        return $this->json(['chef' =>  $chef]
     ); 
     }
-    #[Route('/clientClientProjet', name: 'app_clientClientProjet')]
+    #[Route('/clientClientProjet/{org}', name: 'app_clientClientProjet')]
     public function clientClientProjet(EntityManagerInterface $entityManager,Request $request): Response
-    {
+    {$org=$request->attributes->get('org');
        $client = $entityManager
        ->getRepository(DroitAcces::class)
        ->createQueryBuilder('m')
        ->select('user.username,user.lastname, count(m.id) as counter')
        ->join('m.user','user')
        ->andWhere('user.roles = :roles')
-       ->setParameters([ 'roles' => '["ROLE_CLIENT"]',
+       ->join('user.organisation','organisation')
+       ->andWhere('organisation.id = :org') 
+       ->setParameters([ 'roles' => '["ROLE_CLIENT"]','org' => $org
        ])
        ->groupBy('user.id')
        ->getQuery()->getResult();
@@ -385,14 +484,17 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
 
     #[Route('/membreMembreProjet', name: 'app_membreMembreProjet')]
     public function membreMembreProjet(EntityManagerInterface $entityManager,Request $request): Response
-    {
+    {    $org=$request->attributes->get('org');
+
        $membre = $entityManager
        ->getRepository(DroitAcces::class)
        ->createQueryBuilder('m')
        ->select('user.username,user.lastname, count(m.id) as counter')
        ->join('m.user','user')
        ->andWhere('user.roles = :roles')
-       ->setParameters([ 'roles' => '["ROLE_MEMBRE"]',
+       ->join('user.organisation','organisation')
+       ->andWhere('organisation.id = :org') 
+       ->setParameters([ 'roles' => '["ROLE_MEMBRE"]','org' => $org
        ])
        ->groupBy('user.id')
        ->getQuery()->getResult();
@@ -401,12 +503,18 @@ public function dashboardUserRole(EntityManagerInterface $entityManager,Request 
     ); 
     }
 
-    #[Route('/taskProjetRealise', name: 'app_taskProjetRealise')]
+    #[Route('/taskProjetRealise/{org}', name: 'app_taskProjetRealise')]
     public function taskProjetRealise(EntityManagerInterface $entityManager,Request $request): Response
-    {
+    {    $org=$request->attributes->get('org');
+
         $projet = $entityManager
         ->getRepository(Projet::class)
         ->createQueryBuilder('m')
+        ->join('m.organisation','organisation')
+        ->andWhere('organisation.id = :org')  
+        ->setParameters([
+            'org' => $org
+          ])
         ->getQuery()->getResult();
 
      $p=[];
